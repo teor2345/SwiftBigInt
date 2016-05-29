@@ -11,7 +11,7 @@
 // Used for testing purposes, and serves as a template for BigInts
 
 // Implementation Detail: shared protocols required for (U)IntBox values
-public protocol _Integral: Equatable /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible */ {
+public protocol _Integral: Comparable /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible */ {
 
 }
 
@@ -33,6 +33,11 @@ public struct UIntBox: UIntegral, Boxable {
 @warn_unused_result
 public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
   return lhs.value == rhs.value
+}
+
+@warn_unused_result
+public func <(lhs: UIntBox, rhs: UIntBox) -> Bool {
+  return lhs.value < rhs.value
 }
 
 // Essential

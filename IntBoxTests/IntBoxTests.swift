@@ -47,32 +47,6 @@ class IntBoxTests: XCTestCase {
     XCTAssert(b == b)
   }
 
-  func testSEqual() {
-    let a = IntBox(value: 3)
-    let b = IntBox(value: 3)
-    let c = IntBox(value: 3)
-    // Self-Equivalence
-    XCTAssert(a == a)
-    XCTAssertEqual(b == b, true)
-    XCTAssertNotEqual(c == c, false)
-    // Transitivity
-    XCTAssert(a == b)
-    XCTAssert(b == c)
-    XCTAssert(a == c)
-  }
-
-  func testSNotEqual() {
-    let a = IntBox(value: -1)
-    let b = IntBox(value: -2)
-
-    XCTAssert(a != b)
-    XCTAssert(b != a)
-
-    // And for completeness
-    XCTAssert(a == a)
-    XCTAssert(b == b)
-  }
-
 /*
   func testPerformanceExample() {
     // This is an example of a performance test case.

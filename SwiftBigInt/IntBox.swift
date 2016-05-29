@@ -20,43 +20,18 @@ public protocol UIntBoxable: _IntegerBoxable /*, _DisallowMixedSignArithmetic */
 
 }
 
-// Integers must conform to this protocol to be placed in an IntBox
-public protocol IntBoxable: _IntegerBoxable /*, SignedNumberType */ {
-
-}
-
-// Default passthrough implementations of (U)IntBox methods
-public protocol IntegerBoxPassthrough: _IntegerBoxable {
+// Boxable Types
+public protocol Boxable {
   associatedtype BoxedType
   var value: BoxedType { get /* set */ }
-
 }
 
-// Default passthrough implementations of UIntBox methods
-public protocol UIntPassthrough: UIntBoxable, IntegerBoxPassthrough {
-
-}
-
-// Default passthrough implementations of IntBox methods
-public protocol IntPassthrough: IntBoxable, IntegerBoxPassthrough {
-
-}
-
-public struct UIntBox: UIntPassthrough {
+public struct UIntBox: UIntBoxable, Boxable {
   public var value: UIntMax
 }
 
 @warn_unused_result
 public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
-  return lhs.value == rhs.value
-}
-
-public struct IntBox: IntPassthrough {
-  public var value: IntMax
-}
-
-@warn_unused_result
-public func ==(lhs: IntBox, rhs: IntBox) -> Bool {
   return lhs.value == rhs.value
 }
 

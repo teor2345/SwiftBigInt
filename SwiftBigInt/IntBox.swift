@@ -8,7 +8,7 @@
 //
 // A generic class that will box any conforming integer type
 // Passes through all operations to the underlying type
-// Used for testing purposes
+// Used for testing purposes, and serves as a template for BigInts
 
 // Implementation Detail: shared protocols required for (U)IntBox values
 public protocol _IntegerBoxable: Equatable /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible */ {

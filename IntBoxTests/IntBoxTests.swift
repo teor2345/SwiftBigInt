@@ -32,6 +32,83 @@ class IntBoxTests: XCTestCase {
     _ = UIntBox(integerLiteral: 127)
   }
 
+  func testBoxable() {
+    let a = UIntBox(integerLiteral: 7)
+    let b = UIntBox(integerLiteral: 58)
+    let c = UIntBox(integerLiteral: 96)
+
+    XCTAssert(a.unboxedValue == 7)
+    XCTAssert(b.unboxedValue == 58)
+    XCTAssert(c.unboxedValue == 96)
+
+    let a2 = UIntBox(integerLiteral: a.unboxedValue)
+
+    XCTAssert(a2.unboxedValue == 7)
+
+    var a3 = UIntBox(integerLiteral: 0)
+
+    a3 = UIntBox(integerLiteral: a.unboxedValue)
+    XCTAssert(a3.unboxedValue == 7)
+
+    a3 = a2
+    XCTAssert(a3.unboxedValue == 7)
+
+    // For completeness
+    XCTAssert(a.unboxedValue == 7)
+    XCTAssert(a2.unboxedValue == 7)
+    XCTAssert(a3.unboxedValue == 7)
+  }
+
+  func testCustomStringConvertible() {
+    let a = UIntBox(integerLiteral: 0)
+    let b = UIntBox(integerLiteral: 37)
+    let c = UIntBox(integerLiteral: 104)
+
+    let aStr = String(a)
+    let bStr = String(b)
+    let cStr = String(c)
+
+    XCTAssertFalse(aStr.isEmpty)
+    XCTAssertFalse(bStr.isEmpty)
+    XCTAssertFalse(cStr.isEmpty)
+
+    // We expect each string to contain the unboxed value
+    // (Even if there aren't many other constraints we can test)
+    XCTAssert(aStr.containsString(String(a.unboxedValue)))
+    XCTAssert(bStr.containsString(String(b.unboxedValue)))
+    XCTAssert(cStr.containsString(String(c.unboxedValue)))
+
+    // Testing by inspection
+    print(a.unboxedValue, "boxed string:", aStr)
+    print(b.unboxedValue, "boxed string:", bStr)
+    print(c.unboxedValue, "boxed string:", cStr)
+  }
+
+  func testCustomDebugStringConvertible() {
+    let a = UIntBox(integerLiteral: 4)
+    let b = UIntBox(integerLiteral: 73)
+    let c = UIntBox(integerLiteral: 112)
+
+    let aDebugStr = String(reflecting: a)
+    let bDebugStr = String(reflecting: b)
+    let cDebugStr = String(reflecting: c)
+
+    XCTAssertFalse(aDebugStr.isEmpty)
+    XCTAssertFalse(bDebugStr.isEmpty)
+    XCTAssertFalse(cDebugStr.isEmpty)
+
+    // We expect each string to contain the unboxed value
+    // (Even if there aren't many other constraints we can test)
+    XCTAssert(aDebugStr.containsString(String(a.unboxedValue)))
+    XCTAssert(bDebugStr.containsString(String(b.unboxedValue)))
+    XCTAssert(cDebugStr.containsString(String(c.unboxedValue)))
+
+    // Testing by inspection
+    print(a.unboxedValue, "boxed debug string:", aDebugStr)
+    print(b.unboxedValue, "boxed debug string:", bDebugStr)
+    print(c.unboxedValue, "boxed debug string:", cDebugStr)
+  }
+
   func testEqual() {
     let a = UIntBox(integerLiteral: 0)
     let b = UIntBox(integerLiteral: 0)

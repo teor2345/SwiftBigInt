@@ -140,13 +140,13 @@ class IntBoxTests: XCTestCase {
   func testLessThan() {
     let a = UIntBox(integerLiteral: 4)
     let b = UIntBox(integerLiteral: 5)
-    let c1 = UIntBox(integerLiteral: 6)
+    let c = UIntBox(integerLiteral: 6)
     let c2 = UIntBox(integerLiteral: 6)
 
     // Transitivity
     XCTAssert(a < b)
-    XCTAssert(b < c1)
-    XCTAssert(a < c1)
+    XCTAssert(b < c)
+    XCTAssert(a < c)
 
     // Interchangeability
     XCTAssert(b < c2)
@@ -158,24 +158,24 @@ class IntBoxTests: XCTestCase {
     // Anti-Reflexivity
     XCTAssertFalse(a < a)
     XCTAssertFalse(b < b)
-    XCTAssertFalse(c1 < c1)
+    XCTAssertFalse(c < c)
     XCTAssertFalse(c2 < c2)
 
     // Interchangeability
-    XCTAssertFalse(c1 < c2)
-    XCTAssertFalse(c2 < c1)
+    XCTAssertFalse(c < c2)
+    XCTAssertFalse(c2 < c)
   }
 
   func testLessThanOrEqualTo() {
     let a = UIntBox(integerLiteral: 7)
     let b = UIntBox(integerLiteral: 8)
-    let c1 = UIntBox(integerLiteral: 9)
+    let c = UIntBox(integerLiteral: 9)
     let c2 = UIntBox(integerLiteral: 9)
 
     // Transitivity
     XCTAssert(a <= b)
-    XCTAssert(b <= c1)
-    XCTAssert(a <= c1)
+    XCTAssert(b <= c)
+    XCTAssert(a <= c)
 
     // Interchangeability
     XCTAssert(b <= c2)
@@ -187,24 +187,24 @@ class IntBoxTests: XCTestCase {
     // Reflexivity
     XCTAssert(a <= a)
     XCTAssert(b <= b)
-    XCTAssert(c1 <= c1)
+    XCTAssert(c <= c)
     XCTAssert(c2 <= c2)
 
     // Interchangeability
-    XCTAssert(c1 <= c2)
-    XCTAssert(c2 <= c1)
+    XCTAssert(c <= c2)
+    XCTAssert(c2 <= c)
   }
 
   func testGreaterThan() {
     let a = UIntBox(integerLiteral: 31)
     let b = UIntBox(integerLiteral: 15)
-    let c1 = UIntBox(integerLiteral: 10)
+    let c = UIntBox(integerLiteral: 10)
     let c2 = UIntBox(integerLiteral: 10)
 
     // Transitivity
     XCTAssert(a > b)
-    XCTAssert(b > c1)
-    XCTAssert(a > c1)
+    XCTAssert(b > c)
+    XCTAssert(a > c)
 
     // Interchangeability
     XCTAssert(b > c2)
@@ -216,24 +216,24 @@ class IntBoxTests: XCTestCase {
     // Anti-Reflexivity
     XCTAssertFalse(a > a)
     XCTAssertFalse(b > b)
-    XCTAssertFalse(c1 > c1)
+    XCTAssertFalse(c > c)
     XCTAssertFalse(c2 > c2)
 
     // Interchangeability
-    XCTAssertFalse(c1 > c2)
-    XCTAssertFalse(c2 > c1)
+    XCTAssertFalse(c > c2)
+    XCTAssertFalse(c2 > c)
   }
 
   func testGreaterThanOrEqualTo() {
     let a = UIntBox(integerLiteral: 127)
     let b = UIntBox(integerLiteral: 84)
-    let c1 = UIntBox(integerLiteral: 53)
+    let c = UIntBox(integerLiteral: 53)
     let c2 = UIntBox(integerLiteral: 53)
 
     // Transitivity
     XCTAssert(a >= b)
-    XCTAssert(b >= c1)
-    XCTAssert(a >= c1)
+    XCTAssert(b >= c)
+    XCTAssert(a >= c)
 
     // Interchangeability
     XCTAssert(b >= c2)
@@ -245,12 +245,12 @@ class IntBoxTests: XCTestCase {
     // Reflexivity
     XCTAssert(a >= a)
     XCTAssert(b >= b)
-    XCTAssert(c1 >= c1)
+    XCTAssert(c >= c)
     XCTAssert(c2 >= c2)
 
     // Interchangeability
-    XCTAssert(c1 >= c2)
-    XCTAssert(c2 >= c1)
+    XCTAssert(c >= c2)
+    XCTAssert(c2 >= c)
   }
 
 /*

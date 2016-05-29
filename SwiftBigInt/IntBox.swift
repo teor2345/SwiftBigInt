@@ -42,8 +42,6 @@ public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
 // CustomStringConvertible: description
 // UnsignedIntegerType: toUIntMax, init(UIntMax)
 //   Inherit: _DisallowMixedSignArithmetic, IntegerType
-// SignedIntegerType: toIntMax, init(IntMax)
-//   Inherit: IntegerType, SignedNumberType
 
 // Comparison
 // Equatable: == !=
@@ -58,15 +56,28 @@ public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
 //   Inherit: Comparable, _IntegerArithmeticType
 //   Supply: toIntMax, or perhaps all
 
-// Signed Arithmetic
-// SignedNumberType: - (negation) - (subtraction)
-//   Inherit: Comparable, IntegerLiteralConvertible
-
 // Bitwise
 // BitwiseOperationsType: & | ^ ~ allZeroes
 //   Breaks Soft Contract: O(1) operations
 
+// Powers
+// Integral Powers
+// Integral Exponents
+
 // Low Priority
+
+// Powers
+// Fractional Powers (Roots)
+// Integral Logarithms
+// Fractional Exponents, Fractional Logarithms
+
+// Conversion
+// SignedIntegerType: toIntMax, init(IntMax)
+//   Inherit: IntegerType, SignedNumberType
+
+// Signed Arithmetic
+// SignedNumberType: - (negation) - (subtraction)
+//   Inherit: Comparable, IntegerLiteralConvertible
 
 // Array Indexes
 // _Incrementable: successor (++ ?)

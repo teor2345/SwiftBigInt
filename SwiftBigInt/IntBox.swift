@@ -11,12 +11,12 @@
 // Used for testing purposes, and serves as a template for BigInts
 
 // Implementation Detail: shared protocols required for (U)IntBox values
-public protocol _IntegerBoxable: Equatable /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible */ {
+public protocol _Integral: Equatable /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible */ {
 
 }
 
 // Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntBoxable: _IntegerBoxable /*, _DisallowMixedSignArithmetic */ {
+public protocol UIntegral: _Integral /*, _DisallowMixedSignArithmetic */ {
 
 }
 
@@ -26,7 +26,7 @@ public protocol Boxable {
   var value: BoxedType { get /* set */ }
 }
 
-public struct UIntBox: UIntBoxable, Boxable {
+public struct UIntBox: UIntegral, Boxable {
   public var value: UIntMax
 }
 

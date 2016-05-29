@@ -3,7 +3,8 @@
 //  IntBox
 //
 //  Created by Tim Wilson-Brown on 30/05/2016.
-//  Copyright © 2016 teor. All rights reserved.
+//  Copyright © 2016 teor.
+//  GPL version 3 or later.
 //
 
 #import <Cocoa/Cocoa.h>

@@ -22,10 +22,20 @@ class IntBoxTests: XCTestCase {
     super.tearDown()
   }
 
+  func testIntegerLiteralConvertible() {
+    _ = UIntBox(integerLiteral: 0)
+    _ = UIntBox(integerLiteral: 1)
+    _ = UIntBox(integerLiteral: 2)
+    _ = UIntBox(integerLiteral: 63)
+    _ = UIntBox(integerLiteral: 64)
+    _ = UIntBox(integerLiteral: 126)
+    _ = UIntBox(integerLiteral: 127)
+  }
+
   func testEqual() {
-    let a = UIntBox(value: 0)
-    let b = UIntBox(value: 0)
-    let c = UIntBox(value: 0)
+    let a = UIntBox(integerLiteral: 0)
+    let b = UIntBox(integerLiteral: 0)
+    let c = UIntBox(integerLiteral: 0)
 
     // Self-Equivalence
     XCTAssert(a == a)
@@ -39,8 +49,8 @@ class IntBoxTests: XCTestCase {
   }
 
   func testNotEqual() {
-    let a = UIntBox(value: 1)
-    let b = UIntBox(value: 2)
+    let a = UIntBox(integerLiteral: 1)
+    let b = UIntBox(integerLiteral: 2)
 
     XCTAssert(a != b)
     XCTAssert(b != a)
@@ -51,10 +61,10 @@ class IntBoxTests: XCTestCase {
   }
 
   func testLessThan() {
-    let a = UIntBox(value: 4)
-    let b = UIntBox(value: 5)
-    let c1 = UIntBox(value: 6)
-    let c2 = UIntBox(value: 6)
+    let a = UIntBox(integerLiteral: 4)
+    let b = UIntBox(integerLiteral: 5)
+    let c1 = UIntBox(integerLiteral: 6)
+    let c2 = UIntBox(integerLiteral: 6)
 
     // Transitivity
     XCTAssert(a < b)
@@ -80,10 +90,10 @@ class IntBoxTests: XCTestCase {
   }
 
   func testLessThanOrEqualTo() {
-    let a = UIntBox(value: 7)
-    let b = UIntBox(value: 8)
-    let c1 = UIntBox(value: 9)
-    let c2 = UIntBox(value: 9)
+    let a = UIntBox(integerLiteral: 7)
+    let b = UIntBox(integerLiteral: 8)
+    let c1 = UIntBox(integerLiteral: 9)
+    let c2 = UIntBox(integerLiteral: 9)
 
     // Transitivity
     XCTAssert(a <= b)
@@ -109,10 +119,10 @@ class IntBoxTests: XCTestCase {
   }
 
   func testGreaterThan() {
-    let a = UIntBox(value: 31)
-    let b = UIntBox(value: 15)
-    let c1 = UIntBox(value: 10)
-    let c2 = UIntBox(value: 10)
+    let a = UIntBox(integerLiteral: 31)
+    let b = UIntBox(integerLiteral: 15)
+    let c1 = UIntBox(integerLiteral: 10)
+    let c2 = UIntBox(integerLiteral: 10)
 
     // Transitivity
     XCTAssert(a > b)
@@ -138,10 +148,10 @@ class IntBoxTests: XCTestCase {
   }
 
   func testGreaterThanOrEqualTo() {
-    let a = UIntBox(value: 127)
-    let b = UIntBox(value: 84)
-    let c1 = UIntBox(value: 53)
-    let c2 = UIntBox(value: 53)
+    let a = UIntBox(integerLiteral: 127)
+    let b = UIntBox(integerLiteral: 84)
+    let c1 = UIntBox(integerLiteral: 53)
+    let c2 = UIntBox(integerLiteral: 53)
 
     // Transitivity
     XCTAssert(a >= b)

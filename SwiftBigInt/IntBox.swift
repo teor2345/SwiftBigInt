@@ -11,7 +11,7 @@
 // Used for testing purposes, and serves as a template for BigInts
 
 // Implementation Detail: shared protocols required for (U)IntBox values
-public protocol _Integral: Comparable, IntegerLiteralConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, RawRepresentable */ {
+public protocol _Integral: Comparable, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
 
 }
 
@@ -27,11 +27,21 @@ public protocol Boxable {
 }
 
 public struct UIntBox: UIntegral, Boxable {
-  public typealias IntegerLiteralType = UIntMax
-  public var unboxedValue: UIntBox.IntegerLiteralType
+  public typealias BoxedType = UIntMax
+  public typealias IntegerLiteralType = UIntBox.BoxedType
+  public var unboxedValue: UIntBox.BoxedType
 
   public init(integerLiteral value: UIntBox.IntegerLiteralType) {
     unboxedValue = value
+  }
+
+  public var description: String {
+    return String(unboxedValue)
+  }
+
+  public var debugDescription: String {
+    let classText = String(UIntBox) + "(" + String(BoxedType) + ")"
+    return classText + ": " + String(reflecting: unboxedValue)
   }
 }
 

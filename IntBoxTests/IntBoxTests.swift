@@ -61,13 +61,13 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(b.unboxedValue, 58)
     XCTAssertEqual(c.unboxedValue, 96)
 
-    let a2 = UIntBox(integerLiteral: a.unboxedValue)
+    let a2 = UIntBox(a.unboxedValue)
 
     XCTAssertEqual(a2.unboxedValue, 7)
 
     var a3 = UIntBox(integerLiteral: 0)
 
-    a3 = UIntBox(integerLiteral: a.unboxedValue)
+    a3 = UIntBox(a.unboxedValue)
     XCTAssertEqual(a3.unboxedValue, 7)
 
     a3 = a2
@@ -285,7 +285,7 @@ class IntBoxTests: XCTestCase {
 
   func testToUIntMax() {
     let a = UIntBox(integerLiteral: 24)
-    let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
+    let b = UIntBox(UIntBox.UnboxedType())
     let c = UIntBox.max
 
     XCTAssertEqual(a.toUIntMax(), 24)
@@ -300,7 +300,7 @@ class IntBoxTests: XCTestCase {
 
   func testToIntMax() {
     let a = UIntBox(integerLiteral: 24)
-    let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
+    let b = UIntBox(UIntBox.UnboxedType())
     let c = IntMax.max
 
     XCTAssertEqual(a.toIntMax(), 24)

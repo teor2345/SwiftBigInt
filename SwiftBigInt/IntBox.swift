@@ -18,7 +18,7 @@ public protocol _Integral: IntegerArithmeticType, IntegerLiteralConvertible, Cus
 }
 
 // Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntegral: _Integral /*, _DisallowMixedSignArithmetic */ {
+public protocol UIntegral: _Integral /* , _DisallowMixedSignArithmetic */ {
 
 }
 
@@ -30,7 +30,7 @@ public protocol Boxable {
   var unboxedValue: UnboxedType { get /* set */ }
 }
 
-public struct UIntBox: UIntegral, Boxable /* , like UInt64 */ {
+public struct UIntBox: UIntegral {
 
   // Boxable
   //
@@ -38,24 +38,27 @@ public struct UIntBox: UIntegral, Boxable /* , like UInt64 */ {
   public typealias UnboxedType = UIntMax
   // The value that is in the box
   public var unboxedValue: UIntBox.UnboxedType
+}
+
+extension UIntBox: Boxable {
+
+  /// Create an instance initialized to `value`.
+  public init(_ value: UIntBox) {
+    unboxedValue = value.unboxedValue
+  }
+}
+
+extension UIntBox /* Like UInt64 */ {
 
   /// Create an instance initialized to zero.
   public init() {
     unboxedValue = 0
   }
 
-  /// Like UInt64
-
-  /// Create an instance initialized to `value`.
-  public init(_ value: UIntBox) {
-    unboxedValue = value.unboxedValue
-  }
-
   /// Create an instance initialized to `value`, a builtin 2048-bit signed type
   /// Only usable by the swift standard library
   /// At some point, we should roll our own equivalent initialiser
   ///public init(_builtinIntegerLiteral value: Builtin.Int2048)
-
 
   /// The maximum possible value that can be stored in a UIntBox
   /// max is not relevant for BigInts
@@ -162,7 +165,7 @@ extension UIntBox: IntegerArithmeticType {
   /// -Ounchecked builds).
   @warn_unused_result
   public func toIntMax() -> IntMax {
-    return Int64(unboxedValue)
+    return IntMax(unboxedValue)
   }
 
   /// Adds `lhs` and `rhs`, returning the result and a `Bool` that is
@@ -171,7 +174,7 @@ extension UIntBox: IntegerArithmeticType {
     let (result, overflow) = UnboxedType.addWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
     // Does Swift have defined semantics for overflow?
-    return (UIntBox(integerLiteral: result), overflow)
+    return (UIntBox(result), overflow)
   }
 
   /// Subtracts `lhs` and `rhs`, returning the result and a `Bool` that is
@@ -180,7 +183,7 @@ extension UIntBox: IntegerArithmeticType {
     let (result, overflow) = UnboxedType.subtractWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
     // Does Swift have defined semantics for overflow?
-    return (UIntBox(integerLiteral: result), overflow)
+    return (UIntBox(result), overflow)
   }
 
   /// Multiplies `lhs` and `rhs`, returning the result and a `Bool` that is
@@ -189,7 +192,7 @@ extension UIntBox: IntegerArithmeticType {
     let (result, overflow) = UnboxedType.multiplyWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
     // Does Swift have defined semantics for overflow?
-    return (UIntBox(integerLiteral: result), overflow)
+    return (UIntBox(result), overflow)
   }
 
   /// Divides `lhs` and `rhs`, returning the result and a `Bool` that is
@@ -198,7 +201,7 @@ extension UIntBox: IntegerArithmeticType {
     let (result, overflow) = UnboxedType.divideWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
     // Does Swift have defined semantics for overflow?
-    return (UIntBox(integerLiteral: result), overflow)
+    return (UIntBox(result), overflow)
   }
 
   /// Divides `lhs` and `rhs`, returning the remainder and a `Bool` that is
@@ -207,7 +210,7 @@ extension UIntBox: IntegerArithmeticType {
     let (result, overflow) = UnboxedType.remainderWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
     // Does Swift have defined semantics for overflow?
-    return (UIntBox(integerLiteral: result), overflow)
+    return (UIntBox(result), overflow)
   }
 }
 
@@ -215,28 +218,28 @@ extension UIntBox: IntegerArithmeticType {
 /// arithmetic overflow (except in -Ounchecked builds).
 @warn_unused_result
 public func +(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
-  return UIntBox(integerLiteral: lhs.unboxedValue + rhs.unboxedValue)
+  return UIntBox(lhs.unboxedValue + rhs.unboxedValue)
 }
 
 /// Subtracts `lhs` and `rhs`, returning the result and trapping in case of
 /// arithmetic overflow (except in -Ounchecked builds).
 @warn_unused_result
 public func -(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
-  return UIntBox(integerLiteral: lhs.unboxedValue - rhs.unboxedValue)
+  return UIntBox(lhs.unboxedValue - rhs.unboxedValue)
 }
 
 /// Multiplies `lhs` and `rhs`, returning the result and trapping in case of
 /// arithmetic overflow (except in -Ounchecked builds).
 @warn_unused_result
 public func *(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
-  return UIntBox(integerLiteral: lhs.unboxedValue * rhs.unboxedValue)
+  return UIntBox(lhs.unboxedValue * rhs.unboxedValue)
 }
 
 /// Divides `lhs` and `rhs`, returning the result and trapping in case of
 /// arithmetic overflow (except in -Ounchecked builds).
 @warn_unused_result
 public func /(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
-  return UIntBox(integerLiteral: lhs.unboxedValue / rhs.unboxedValue)
+  return UIntBox(lhs.unboxedValue / rhs.unboxedValue)
 }
 
 /// Divides `lhs` and `rhs`, returning the remainder and trapping in case of

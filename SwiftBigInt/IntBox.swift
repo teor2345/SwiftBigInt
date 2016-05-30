@@ -357,11 +357,13 @@ extension UIntBox: _Incrementable {
 // _IntegerArithmeticType: addWithOverflow, subtractWithOverflow, multiplyWithOverflow, divideWithOverflow, remainderWithOverflow
 // IntegerArithmeticType: + - (subtraction) * / % toIntMax
 //   Inherit: Comparable, _IntegerArithmeticType
-//   Supply: toIntMax, or perhaps all
+//   Supply: all
+//   Not Mentioned: compound assignment operators (+= etc), which are automatically supplied
 
 // Bitwise
 // BitwiseOperationsType: & | ^ ~ allZeroes
 //   Breaks Soft Contract: O(1) operations
+//   Not Mentioned: compound assignment operators (|= etc), which are automatically supplied
 
 // Powers
 // Integral Powers
@@ -381,6 +383,7 @@ extension UIntBox: _Incrementable {
 // Signed Arithmetic
 // SignedNumberType: - (negation) - (subtraction)
 //   Inherit: Comparable, IntegerLiteralConvertible
+//   Not mentioned: + (unary plus)
 
 // Array Indexes
 // _Incrementable: successor (++ ?)

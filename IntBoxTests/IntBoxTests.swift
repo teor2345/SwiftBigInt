@@ -645,4 +645,40 @@ class IntBoxTests: XCTestCase {
     // Apparently
     XCTAssertEqual(UIntBox.max.successor(), 0)
   }
+
+  func testCompoundArithmeticAssignment() {
+    var a = UIntBox(0)
+
+    a += 1
+    XCTAssertEqual(a, 1)
+
+    a *= 5
+    XCTAssertEqual(a, 5)
+
+    a -= 1
+    XCTAssertEqual(a, 4)
+
+    a /= 2
+    XCTAssertEqual(a, 2)
+
+    a += 1
+    a %= 2
+    XCTAssertEqual(a, 1)
+  }
+
+  func testCompoundBitwiseAssignment() {
+    var a = UIntBox(0)
+
+    // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    a |= 1
+    XCTAssertEqual(a, 1)
+
+    // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    a &= 5
+    XCTAssertEqual(a, 1)
+
+    // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    a ^= 2
+    XCTAssertEqual(a, 3)
+  }
 }

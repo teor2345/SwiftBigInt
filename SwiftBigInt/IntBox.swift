@@ -17,10 +17,10 @@ public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, Integer
 
 }
 
-/// Integers must conform to this protocol to be placed in a UIntBox
+// Integers must conform to this protocol to be placed in a UIntBox
 public protocol UIntegral: _Integral, Hashable, _Incrementable {
-  /// I wanted to use _DisallowMixedSignArithmetic, but it has a hidden dependency on _BuiltinIntegerLiteralConvertible via _IntegerType
-  /// _BuiltinIntegerLiteralConvertible can never be satisfied in user code, because it requires init(Builtin.Int2048), and Builtin is not accessible from user code
+  // I wanted to use _DisallowMixedSignArithmetic, but it has a hidden dependency on _BuiltinIntegerLiteralConvertible via _IntegerType
+  // _BuiltinIntegerLiteralConvertible can never be satisfied in user code, because it requires init(Builtin.Int2048), and Builtin is not accessible from user code
 }
 
 // Types that can be 'boxed' into a struct
@@ -40,11 +40,11 @@ public struct UIntBox: UIntegral {
   // The value that is in the box
   public var unboxedValue: UIntBox.UnboxedType
 
-  /// init from UIntBox
-  ///
-  /// Create an instance initialized to `value`.
-  /// This initialiser's value must have an external name, otherwise it conflicts with the IntegerLiteralConvertible initialiser
-  /// Given the choice, I would prefer to have to prefix UIntBox values with v: (value), than integer literal values with integerLiteral:
+  // init from UIntBox
+  //
+  // Create an instance initialized to `value`.
+  // This initialiser's value must have an external name, otherwise it conflicts with the IntegerLiteralConvertible initialiser
+  // Given the choice, I would prefer to have to prefix UIntBox values with v: (value), than integer literal values with integerLiteral:
   public init(v value: UIntBox) {
     unboxedValue = value.unboxedValue
   }
@@ -52,24 +52,24 @@ public struct UIntBox: UIntegral {
 
 extension UIntBox /* Like UInt64 */ {
 
-  /// Create an instance initialized to zero.
+  // Create an instance initialized to zero.
   public init() {
     unboxedValue = 0
   }
 
-  /// Create an instance initialized to `value`, a builtin 2048-bit signed type
-  /// Only usable by the swift standard library
-  /// At some point, we should roll our own equivalent initialiser
-  ///public init(_builtinIntegerLiteral value: Builtin.Int2048)
+  // Create an instance initialized to `value`, a builtin 2048-bit signed type
+  // Only usable by the swift standard library
+  // At some point, we should roll our own equivalent initialiser
+  //public init(_builtinIntegerLiteral value: Builtin.Int2048)
 
-  /// The maximum possible value that can be stored in a UIntBox
-  /// max is not relevant for BigInts
+  // The maximum possible value that can be stored in a UIntBox
+  // max is not relevant for BigInts
   public static var max: UIntBox {
     return UIntBox(UnboxedType.max)
   }
 
-  /// The minimum possible value that can be stored in a UIntBox
-  /// min is not relevant for BigInts
+  // The minimum possible value that can be stored in a UIntBox
+  // min is not relevant for BigInts
   public static var min: UIntBox {
     return UIntBox(UnboxedType.min)
   }
@@ -123,8 +123,8 @@ extension UIntBox: CustomDebugStringConvertible {
   }
 }
 
-/// Equatable
-///
+// Equatable
+//
 /// Instances of conforming types can be compared for value equality
 /// using operators `==` and `!=`.
 ///
@@ -147,8 +147,8 @@ public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
   return lhs.unboxedValue == rhs.unboxedValue
 }
 
-/// Comparable
-///
+// Comparable
+//
 /// Instances of conforming types can be compared using relational
 /// operators, which define a [strict total order](http://en.wikipedia.org/wiki/Total_order#Strict_total_order).
 ///
@@ -253,15 +253,15 @@ public func %(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 
 extension UIntBox: BitwiseOperationsType {
   /// A set type with O(1) standard bitwise operators.
-  /// O(1) complexity can not be achieved for BigInts.
+  // O(1) complexity can not be achieved for BigInts.
 
   /// The empty bitset.
   ///
   /// Also the [identity element](http://en.wikipedia.org/wiki/Identity_element) for `|` and
   /// `^`, and the [fixed point](http://en.wikipedia.org/wiki/Fixed_point_(mathematics)) for
   /// `&`.
-  ///
-  /// BigInts have multiple valid representations of the empty bitset.
+  //
+  // BigInts have multiple valid representations of the empty bitset.
   public static var allZeros: UIntBox {
     return UIntBox(0)
   }
@@ -270,9 +270,9 @@ extension UIntBox: BitwiseOperationsType {
 /// Returns the intersection of bits set in `lhs` and `rhs`.
 ///
 /// - Complexity: O(1).
-/// O(1) complexity can not be achieved for BigInts.
-///
-/// BigInts have multiple valid representations of the intersection of two bitsets.
+// O(1) complexity can not be achieved for BigInts.
+//
+// BigInts have multiple valid representations of the intersection of two bitsets.
 @warn_unused_result
 public func &(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
   return UIntBox(lhs.unboxedValue & rhs.unboxedValue)
@@ -281,9 +281,9 @@ public func &(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 /// Returns the union of bits set in `lhs` and `rhs`.
 ///
 /// - Complexity: O(1).
-/// O(1) complexity can not be achieved for BigInts.
-///
-/// BigInts have multiple valid representations of the union of two bitsets.
+// O(1) complexity can not be achieved for BigInts.
+//
+// BigInts have multiple valid representations of the union of two bitsets.
 @warn_unused_result
 public func |(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
   return UIntBox(lhs.unboxedValue | rhs.unboxedValue)
@@ -292,9 +292,9 @@ public func |(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 /// Returns the bits that are set in exactly one of `lhs` and `rhs`.
 ///
 /// - Complexity: O(1).
-/// O(1) complexity can not be achieved for BigInts.
-///
-/// BigInts have multiple valid representations of the xor of two bitsets.
+// O(1) complexity can not be achieved for BigInts.
+//
+// BigInts have multiple valid representations of the xor of two bitsets.
 @warn_unused_result
 public func ^(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
   return UIntBox(lhs.unboxedValue ^ rhs.unboxedValue)
@@ -303,9 +303,9 @@ public func ^(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 /// Returns `x ^ ~Self.allZeros`.
 ///
 /// - Complexity: O(1).
-/// O(1) complexity can not be achieved for BigInts.
-///
-/// BigInts have multiple valid representations of the complement of a bitset.
+// O(1) complexity can not be achieved for BigInts.
+//
+// BigInts have multiple valid representations of the complement of a bitset.
 @warn_unused_result
 prefix public func ~(x: UIntBox) -> UIntBox {
   return UIntBox(~x.unboxedValue)
@@ -326,7 +326,7 @@ extension UIntBox: Hashable {
 extension UIntBox: _Incrementable {
   /// This protocol is an implementation detail of `ForwardIndexType`; do
   /// not use it directly.
-  /// Oops!
+  // Oops!
 
   /// Returns the next consecutive value in a discrete sequence of
   /// `Self` values.

@@ -311,6 +311,24 @@ prefix public func ~(x: UIntBox) -> UIntBox {
   return UIntBox(~x.unboxedValue)
 }
 
+// The generic version of this function is @warn_unused_result
+// Implement our own to silence warnings
+public func &=(inout lhs: UIntBox, rhs: UIntBox) {
+  lhs = lhs & rhs
+}
+
+// The generic version of this function is @warn_unused_result
+// Implement our own to silence warnings
+public func |=(inout lhs: UIntBox, rhs: UIntBox) {
+  lhs = lhs | rhs
+}
+
+// The generic version of this function is @warn_unused_result
+// Implement our own to silence warnings
+public func ^=(inout lhs: UIntBox, rhs: UIntBox) {
+  lhs = lhs ^ rhs
+}
+
 extension UIntBox: Hashable {
   /// Instances of conforming types provide an integer `hashValue` and
   /// can be used as `Dictionary` keys.

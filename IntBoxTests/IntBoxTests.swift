@@ -25,19 +25,19 @@ class IntBoxTests: XCTestCase {
   func testInitEmpty() {
     let a = UIntBox()
 
-    XCTAssert(a.unboxedValue == 0)
+    XCTAssertEqual(a.unboxedValue, 0)
   }
 
   func testMax() {
     let a = UIntBox.max
 
-    XCTAssert(a.unboxedValue == UIntBox.UnboxedType.max)
+    XCTAssertEqual(a.unboxedValue, UIntBox.UnboxedType.max)
   }
 
   func testMin() {
     let a = UIntBox.min
 
-    XCTAssert(a.unboxedValue == UIntBox.UnboxedType.min)
+    XCTAssertEqual(a.unboxedValue, UIntBox.UnboxedType.min)
   }
 
   func testInitUIntBox() {
@@ -46,10 +46,10 @@ class IntBoxTests: XCTestCase {
     let c = UIntBox(UIntBox.max)
     let d = UIntBox(UIntBox.min)
 
-    XCTAssert(a.unboxedValue == 0)
-    XCTAssert(b.unboxedValue == 0)
-    XCTAssert(c.unboxedValue == UIntBox.UnboxedType.max)
-    XCTAssert(d.unboxedValue == UIntBox.UnboxedType.min)
+    XCTAssertEqual(a.unboxedValue, 0)
+    XCTAssertEqual(b.unboxedValue, 0)
+    XCTAssertEqual(c.unboxedValue, UIntBox.UnboxedType.max)
+    XCTAssertEqual(d.unboxedValue, UIntBox.UnboxedType.min)
   }
 
   func testBoxable() {
@@ -57,26 +57,26 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 58)
     let c = UIntBox(integerLiteral: 96)
 
-    XCTAssert(a.unboxedValue == 7)
-    XCTAssert(b.unboxedValue == 58)
-    XCTAssert(c.unboxedValue == 96)
+    XCTAssertEqual(a.unboxedValue, 7)
+    XCTAssertEqual(b.unboxedValue, 58)
+    XCTAssertEqual(c.unboxedValue, 96)
 
     let a2 = UIntBox(integerLiteral: a.unboxedValue)
 
-    XCTAssert(a2.unboxedValue == 7)
+    XCTAssertEqual(a2.unboxedValue, 7)
 
     var a3 = UIntBox(integerLiteral: 0)
 
     a3 = UIntBox(integerLiteral: a.unboxedValue)
-    XCTAssert(a3.unboxedValue == 7)
+    XCTAssertEqual(a3.unboxedValue, 7)
 
     a3 = a2
-    XCTAssert(a3.unboxedValue == 7)
+    XCTAssertEqual(a3.unboxedValue, 7)
 
     // For completeness
-    XCTAssert(a.unboxedValue == 7)
-    XCTAssert(a2.unboxedValue == 7)
-    XCTAssert(a3.unboxedValue == 7)
+    XCTAssertEqual(a.unboxedValue, 7)
+    XCTAssertEqual(a2.unboxedValue, 7)
+    XCTAssertEqual(a3.unboxedValue, 7)
   }
 
   func testIntegerLiteralConvertible() {
@@ -146,8 +146,8 @@ class IntBoxTests: XCTestCase {
 
     // Self-Equivalence
     XCTAssert(a == a)
-    XCTAssertEqual(b == b, true)
-    XCTAssertNotEqual(c == c, false)
+    XCTAssert(b == b)
+    XCTAssert(c == c)
 
     // Transitivity
     XCTAssert(a == b)
@@ -288,14 +288,14 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
     let c = UIntBox.max
 
-    XCTAssert(a.toUIntMax() == 24)
-    XCTAssert(a == 24)
+    XCTAssertEqual(a.toUIntMax(), 24)
+    XCTAssertEqual(a, 24)
 
-    XCTAssert(b.toUIntMax() == 0)
-    XCTAssert(b == 0)
+    XCTAssertEqual(b.toUIntMax(), 0)
+    XCTAssertEqual(b, 0)
 
-    XCTAssert(c.toUIntMax() == UIntBox.max.unboxedValue)
-    XCTAssert(c == UIntBox.max)
+    XCTAssertEqual(c.toUIntMax(), UIntBox.max.unboxedValue)
+    XCTAssertEqual(c, UIntBox.max)
   }
 
   func testToIntMax() {
@@ -303,14 +303,14 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
     let c = IntMax.max
 
-    XCTAssert(a.toIntMax() == 24)
-    XCTAssert(a == 24)
+    XCTAssertEqual(a.toIntMax(), 24)
+    XCTAssertEqual(a, 24)
 
-    XCTAssert(b.toIntMax() == 0)
-    XCTAssert(b == 0)
+    XCTAssertEqual(b.toIntMax(), 0)
+    XCTAssertEqual(b, 0)
 
-    XCTAssert(c.toIntMax() == IntMax.max)
-    XCTAssert(c == IntMax.max)
+    XCTAssertEqual(c.toIntMax(), IntMax.max)
+    XCTAssertEqual(c, IntMax.max)
   }
 
   func testAdd() {
@@ -318,11 +318,11 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let c = a + b
 
-    XCTAssert(c == 117)
+    XCTAssertEqual(c, 117)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
   }
 
   func testAddWithOverflow() {
@@ -331,12 +331,12 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let (c, cOverflow) = UIntBox.addWithOverflow(a, b)
 
-    XCTAssert(c == 117)
+    XCTAssertEqual(c, 117)
     XCTAssertFalse(cOverflow)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
 
     // Overflow
     let d = UIntBox.max
@@ -344,7 +344,7 @@ class IntBoxTests: XCTestCase {
 
     // Two's Complement?
     // Apparently
-    XCTAssert(e == UIntBox(UIntBox.max - 1))
+    XCTAssertEqual(e, UIntBox(UIntBox.max - 1))
     XCTAssert(eOverflow)
   }
 
@@ -353,11 +353,11 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let c = b - a
 
-    XCTAssert(c == 53)
+    XCTAssertEqual(c, 53)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
   }
 
   func testSubtractWithOverflow() {
@@ -365,19 +365,19 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let (c, cOverflow) = UIntBox.subtractWithOverflow(b, a)
 
-    XCTAssert(c == 53)
+    XCTAssertEqual(c, 53)
     XCTAssertFalse(cOverflow)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
 
     // Underflow
     let (d, dOverflow) = UIntBox.subtractWithOverflow(a, b)
 
     // Two's Complement?
     // Apparently
-    XCTAssert(d == UIntBox(UIntBox.max - (b - a) + 1))
+    XCTAssertEqual(d, UIntBox(UIntBox.max - (b - a) + 1))
     XCTAssert(dOverflow)
   }
 
@@ -386,11 +386,11 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 7)
     let c = a * b
 
-    XCTAssert(c == 42)
+    XCTAssertEqual(c, 42)
 
     // For Completeness
-    XCTAssert(a == 6)
-    XCTAssert(b == 7)
+    XCTAssertEqual(a, 6)
+    XCTAssertEqual(b, 7)
   }
 
   func testMultiplyWithOverflow() {
@@ -398,12 +398,12 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 7)
     let (c, cOverflow) = UIntBox.multiplyWithOverflow(a, b)
 
-    XCTAssert(c == 42)
+    XCTAssertEqual(c, 42)
     XCTAssertFalse(cOverflow)
 
     // For Completeness
-    XCTAssert(a == 6)
-    XCTAssert(b == 7)
+    XCTAssertEqual(a, 6)
+    XCTAssertEqual(b, 7)
 
     // Overflow
     let d = UIntBox.max
@@ -411,7 +411,7 @@ class IntBoxTests: XCTestCase {
 
     // Two's Complement?
     // Apparently
-    XCTAssert(e == UIntBox(UIntBox.max - a + 1))
+    XCTAssertEqual(e, UIntBox(UIntBox.max - a + 1))
     XCTAssert(eOverflow)
   }
 
@@ -421,18 +421,18 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let c = b / a
 
-    XCTAssert(c == 2)
+    XCTAssertEqual(c, 2)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
 
     // Exact
     let d = UIntBox(integerLiteral: 45)
     let e = UIntBox(integerLiteral: 5)
     let f = d / e
 
-    XCTAssert(f == 9)
+    XCTAssertEqual(f, 9)
   }
 
   func testDivideWithOverflow() {
@@ -441,19 +441,19 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let (c, cOverflow) = UIntBox.divideWithOverflow(b, a)
 
-    XCTAssert(c == 2)
+    XCTAssertEqual(c, 2)
     XCTAssertFalse(cOverflow)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
 
     // Exact
     let d = UIntBox(integerLiteral: 45)
     let e = UIntBox(integerLiteral: 5)
     let (f, fOverflow) = UIntBox.divideWithOverflow(d, e)
 
-    XCTAssert(f == 9)
+    XCTAssertEqual(f, 9)
     XCTAssertFalse(fOverflow)
 
     // Almost all unsigned divisions do not overflow
@@ -462,10 +462,10 @@ class IntBoxTests: XCTestCase {
     let (i, iOverflow) = UIntBox.divideWithOverflow(g, h)
     let (j, jOverflow) = UIntBox.divideWithOverflow(h, g)
 
-    XCTAssert(i == UIntBox.max)
+    XCTAssertEqual(i, UIntBox.max)
     XCTAssertFalse(iOverflow)
 
-    XCTAssert(j == 0)
+    XCTAssertEqual(j, 0)
     XCTAssertFalse(jOverflow)
 
     // Divide by Zero "Overflows"
@@ -473,12 +473,12 @@ class IntBoxTests: XCTestCase {
     let (l, lOverflow) = UIntBox.divideWithOverflow(k, h)
     let (m, mOverflow) = UIntBox.divideWithOverflow(h, k)
 
-    XCTAssert(l == 0)
+    XCTAssertEqual(l, 0)
     XCTAssertFalse(lOverflow)
 
     // What is 1/0?
     // 0, apparently
-    XCTAssert(m == 0)
+    XCTAssertEqual(m, 0)
     XCTAssert(mOverflow)
   }
 
@@ -487,11 +487,11 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let c = b % a
 
-    XCTAssert(c == 21)
+    XCTAssertEqual(c, 21)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
   }
 
   func testRemainderWithOverflow() {
@@ -499,19 +499,19 @@ class IntBoxTests: XCTestCase {
     let b = UIntBox(integerLiteral: 85)
     let (c, cOverflow) = UIntBox.remainderWithOverflow(b, a)
 
-    XCTAssert(c == 21)
+    XCTAssertEqual(c, 21)
     XCTAssertFalse(cOverflow)
 
     // For Completeness
-    XCTAssert(a == 32)
-    XCTAssert(b == 85)
+    XCTAssertEqual(a, 32)
+    XCTAssertEqual(b, 85)
 
     // Exact
     let d = UIntBox(integerLiteral: 45)
     let e = UIntBox(integerLiteral: 5)
     let (f, fOverflow) = UIntBox.remainderWithOverflow(d, e)
 
-    XCTAssert(f == 0)
+    XCTAssertEqual(f, 0)
     XCTAssertFalse(fOverflow)
 
     // Almost all unsigned remainders do not overflow
@@ -520,10 +520,10 @@ class IntBoxTests: XCTestCase {
     let (i, iOverflow) = UIntBox.remainderWithOverflow(g, h)
     let (j, jOverflow) = UIntBox.remainderWithOverflow(h, g)
 
-    XCTAssert(i == 0)
+    XCTAssertEqual(i, 0)
     XCTAssertFalse(iOverflow)
 
-    XCTAssert(j == 1)
+    XCTAssertEqual(j, 1)
     XCTAssertFalse(jOverflow)
 
     // Remainder of Divide by Zero "Overflows"
@@ -531,22 +531,12 @@ class IntBoxTests: XCTestCase {
     let (l, lOverflow) = UIntBox.remainderWithOverflow(k, h)
     let (m, mOverflow) = UIntBox.remainderWithOverflow(h, k)
 
-    XCTAssert(l == 0)
+    XCTAssertEqual(l, 0)
     XCTAssertFalse(lOverflow)
 
     // What is 1/0?
     // 0 remainder 0, apparently
-    XCTAssert(m == 0)
+    XCTAssertEqual(m, 0)
     XCTAssert(mOverflow)
   }
-
-/*
-  func testPerformanceExample() {
-    // This is an example of a performance test case.
-    self.measureBlock {
-      // Put the code you want to measure the time of here.
-    }
-  }
-*/
-
 }

@@ -18,7 +18,7 @@ public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, Integer
 }
 
 // Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntegral: _Integral /* , _DisallowMixedSignArithmetic */ {
+public protocol UIntegral: _Integral, Hashable /* _DisallowMixedSignArithmetic */ {
 
 }
 
@@ -308,6 +308,18 @@ public func ^(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 @warn_unused_result
 prefix public func ~(x: UIntBox) -> UIntBox {
   return UIntBox(~x.unboxedValue)
+}
+
+extension UIntBox: Hashable {
+  /// Instances of conforming types provide an integer `hashValue` and
+  /// can be used as `Dictionary` keys.
+
+  /// The hash value.
+  ///
+  /// **Axiom:** `x == y` implies `x.hashValue == y.hashValue`.
+  public var hashValue: Int {
+    return unboxedValue.hashValue
+  }
 }
 
 // Essential

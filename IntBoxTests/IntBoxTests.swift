@@ -618,4 +618,21 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(~UIntBox(1), UIntBox.max - 1)
     XCTAssertEqual(~UIntBox.allZeros, UIntBox.max)
   }
+
+  func testHashable() {
+    XCTAssertEqual(UIntBox(0).hashValue, UIntBox(0).hashValue)
+
+    // It's possible some hash values will collide, so check a few
+    if (UIntBox(1).hashValue != UIntBox(2).hashValue) {
+      XCTAssertNotEqual(UIntBox(1), UIntBox(2))
+    }
+
+    if (UIntBox(3).hashValue != UIntBox(4).hashValue) {
+      XCTAssertNotEqual(UIntBox(3), UIntBox(4))
+    }
+
+    if (UIntBox(5).hashValue != UIntBox(6).hashValue) {
+      XCTAssertNotEqual(UIntBox(5), UIntBox(6))
+    }
+  }
 }

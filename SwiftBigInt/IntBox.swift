@@ -38,12 +38,13 @@ public struct UIntBox: UIntegral {
   public typealias UnboxedType = UIntMax
   // The value that is in the box
   public var unboxedValue: UIntBox.UnboxedType
-}
 
-extension UIntBox: Boxable {
-
+  /// init from UIntBox
+  ///
   /// Create an instance initialized to `value`.
-  public init(_ value: UIntBox) {
+  /// This initialiser's value must have an external name, otherwise it conflicts with the IntegerLiteralConvertible initialiser
+  /// Given the choice, I would prefer to have to prefix UIntBox values with v: (value), than integer literal values with integerLiteral:
+  public init(v value: UIntBox) {
     unboxedValue = value.unboxedValue
   }
 }

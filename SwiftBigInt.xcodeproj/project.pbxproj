@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0276E1871CFC4D87001EF40D /* IntBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0276E1861CFC4D87001EF40D /* IntBox.swift */; };
 		02C493D01CFA33EE00FC3513 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C493CF1CFA33EE00FC3513 /* main.swift */; };
 		02C493E21CFB801100FC3513 /* IntBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 02C493E11CFB801100FC3513 /* IntBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		02C493E91CFB801100FC3513 /* IntBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C493DF1CFB801100FC3513 /* IntBox.framework */; };
 		02C493EE1CFB801100FC3513 /* IntBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C493ED1CFB801100FC3513 /* IntBoxTests.swift */; };
 		02C493F61CFB806C00FC3513 /* IntBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C493DF1CFB801100FC3513 /* IntBox.framework */; };
-		02C493F71CFB807C00FC3513 /* IntBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C493D81CFA463C00FC3513 /* IntBox.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,9 +38,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0276E1861CFC4D87001EF40D /* IntBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntBox.swift; sourceTree = "<group>"; };
 		02C493CC1CFA33EE00FC3513 /* SwiftBigInt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SwiftBigInt; sourceTree = BUILT_PRODUCTS_DIR; };
 		02C493CF1CFA33EE00FC3513 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		02C493D81CFA463C00FC3513 /* IntBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntBox.swift; path = ../SwiftBigInt/IntBox.swift; sourceTree = "<group>"; };
 		02C493DF1CFB801100FC3513 /* IntBox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IntBox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02C493E11CFB801100FC3513 /* IntBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntBox.h; sourceTree = "<group>"; };
 		02C493E31CFB801100FC3513 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -107,7 +107,7 @@
 		02C493E01CFB801100FC3513 /* IntBox */ = {
 			isa = PBXGroup;
 			children = (
-				02C493D81CFA463C00FC3513 /* IntBox.swift */,
+				0276E1861CFC4D87001EF40D /* IntBox.swift */,
 				02C493E11CFB801100FC3513 /* IntBox.h */,
 				02C493E31CFB801100FC3513 /* Info.plist */,
 			);
@@ -260,7 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02C493F71CFB807C00FC3513 /* IntBox.swift in Sources */,
+				0276E1871CFC4D87001EF40D /* IntBox.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +384,7 @@
 		02C493F11CFB801100FC3513 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -397,6 +398,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gmail.teor2345.SwiftBigInt.IntBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -405,6 +407,7 @@
 		02C493F21CFB801100FC3513 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -473,6 +476,7 @@
 				02C493F21CFB801100FC3513 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		02C493F31CFB801100FC3513 /* Build configuration list for PBXNativeTarget "IntBoxTests" */ = {
 			isa = XCConfigurationList;
@@ -481,6 +485,7 @@
 				02C493F51CFB801100FC3513 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,93 +7,75 @@
 //  GPL version 3 or later.
 //
 
-import BitwiseShiftType
-
 // Surprisingly, the swift standard library doesn't tell you how many bits are in an integer,
 // even though it's part of most type names, and the standard libarary has IntegerArithmeticType and BitwiseOperationsType
 
 public protocol FixedBitWidthType {
   // The width of the type, for fixed-width types only
 
-  static var bitWidth: UInt { get }
+  static var bitWidth: UIntMax { get }
 }
 
 // All integers just need a little nudge to conform to this protocol
-extension UIntMax: FixedBitWidthType { static let bitWidth = bitWidthUnsigned() }
-extension UInt:    FixedBitWidthType { static let bitWidth = bitWidthUnsigned() }
+//extension UIntMax: FixedBitWidthType { public static let bitWidth = bitWidthUnsigned(UIntMax()) } - redundant, UInt64 conforms
+// Swift says UInt is 64 bits
+extension UInt:    FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
 
-extension UInt64:  FixedBitWidthType { static let bitWidth = 64 }
-extension UInt32:  FixedBitWidthType { static let bitWidth = 32 }
-extension UInt16:  FixedBitWidthType { static let bitWidth = 16 }
-extension UInt8:   FixedBitWidthType { static let bitWidth =  8 }
+extension UInt64:  FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
+extension UInt32:  FixedBitWidthType { public static let bitWidth: UIntMax = 32 }
+extension UInt16:  FixedBitWidthType { public static let bitWidth: UIntMax = 16 }
+extension UInt8:   FixedBitWidthType { public static let bitWidth: UIntMax =  8 }
 
-extension IntMax:  FixedBitWidthType { static let bitWidth = bitWidthSigned() }
-extension Int:     FixedBitWidthType { static let bitWidth = bitWidthSigned() }
+//extension IntMax:  FixedBitWidthType { public static let bitWidth = bitWidthUnsigned(IntMax.) } - redundant, Int64 conforms
+// Swift says Int is 64 bits
+extension Int:     FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
 
-extension Int64:   FixedBitWidthType { static let bitWidth = 64 }
-extension Int32:   FixedBitWidthType { static let bitWidth = 32 }
-extension Int16:   FixedBitWidthType { static let bitWidth = 16 }
-extension Int8:    FixedBitWidthType { static let bitWidth =  8 }
+extension Int64:   FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
+extension Int32:   FixedBitWidthType { public static let bitWidth: UIntMax = 32 }
+extension Int16:   FixedBitWidthType { public static let bitWidth: UIntMax = 16 }
+extension Int8:    FixedBitWidthType { public static let bitWidth: UIntMax =  8 }
 
-// What's the width of the unsigned integer type?
+// Utility functions that are somewhat superfluous now we give all types set bit widths
+
+// What's the width of an arbitrary unsigned integer type?
 @warn_unused_result
-public func bitWidthUnsigned<T: UnsignedIntegerType>() -> UInt {
-  let maxT = ~T.allZeros
+public func bitWidthUnsigned<T: UnsignedIntegerType>(dummy: T) -> UIntMax {
+  let maxT = (~T.allZeros).toUIntMax()
 
   switch maxT {
-  case UInt64.max:
+  case UInt64.max.toUIntMax():
     return 64
-  case UInt32.max:
+  case UInt32.max.toUIntMax():
     return 32
-  case UInt16.max:
+  case UInt16.max.toUIntMax():
     return 16
-  case UInt8.max:
+  case UInt8.max.toUIntMax():
     return  8
   default:
-    return bitWidthBitShift<T>()
+    // Calculate
+    return bitWidthFromUnsignedMax(maxT)
   }
 }
 
-// What's the width of the signed integer type?
-// Assumes Two's complement
+// What's the width of an unsigned integer type with this maximum?
+// Rounds up bitWidth to the nearest power of two
 @warn_unused_result
-public func bitWidthSigned<T: SignedIntegerType>() -> UInt {
-  let minT = ~T.allZeros
+public func bitWidthFromUnsignedMax(max: UIntMax) -> UIntMax {
+  var bitWidth: UIntMax = 1
+  var divisor: UIntMax = 2
 
-  switch minT {
-  case Int64.min:
-    return 64
-  case Int32.min:
-    return 32
-  case Int16.min:
-    return 16
-  case Int8.min:
-    return  8
-  default:
-    return bitWidthBitShift<T>()
-  }
-}
-
-// What's the width of the bitwise-shiftable integer type?
-@warn_unused_result
-public func bitWidthBitShift<T: BitwiseShiftType>() -> UInt {
-  // The shifter values are always equal, but only UInt is Comparable
-  var shifterUInt = UInt(1)
-  var shifterT = T(1)
-  var shifteeT = T(1)
-  // There's a Builtin.Int2048 in Swift 2
-  let maxShiftLimitUInt = UInt(2048)
-
-  while (shifteeT << shifterT) != 0 {
-    /* '<<= 1' means '*= 2', T is only guaranteed to have '<<=' */
-    shifterT <<= 1
-    shifterUInt <<= 1
-    if (shifterUInt > maxShiftLimitUInt) {
-      // Yeah, it looks like an unlimited bit width type
-      return 0
-    }
+  // short-circuit one bit holds maximum one
+  if max == 1 {
+    return 1
   }
 
-  return shifterUInt
-}
+  // Don't ever square divisor so much it overflows
+  while (max / divisor) / divisor > 0 {
+    // square the divisor
+    divisor = divisor * divisor
+    // double the bit width
+    bitWidth = bitWidth * 2
+  }
 
+  return bitWidth * 2
+}

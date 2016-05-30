@@ -20,9 +20,8 @@ public protocol Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerL
 
 // Extra Protocols specific to this framework
 public protocol IntegralExtra: BitwiseShiftType /*, FixedBitWidthType */ {
-
+  
 }
-
 
 // Integers must conform to this protocol to be placed in a UIntBox
 public protocol UIntegral: Integral, IntegralExtra, Hashable, _Incrementable {
@@ -351,9 +350,17 @@ public func >>(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
   return UIntBox(lhs.unboxedValue >> rhs.unboxedValue)
 }
 
-/*
-extension UIntBox: FixedBitWidthType { static let bitWidth = UnboxedType.bitWidth }
-*/
+@warn_unused_result
+public func <<(lhs: UIntBox, rhs: UIntMax) -> UIntBox {
+  return UIntBox(lhs.unboxedValue << rhs)
+}
+
+@warn_unused_result
+public func >>(lhs: UIntBox, rhs: UIntMax) -> UIntBox {
+  return UIntBox(lhs.unboxedValue >> rhs)
+}
+
+extension UIntBox: FixedBitWidthType { public static let bitWidth = UnboxedType.bitWidth }
 
 extension UIntBox: Hashable {
   /// Instances of conforming types provide an integer `hashValue` and

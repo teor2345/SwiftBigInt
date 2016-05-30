@@ -11,16 +11,6 @@ import XCTest
 @testable import IntBox
 
 class IntBoxTests: XCTestCase {
-    
-  override func setUp() {
-    super.setUp()
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-  }
-
-  override func tearDown() {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    super.tearDown()
-  }
 
   func testInitEmpty() {
     let a = UIntBox()
@@ -658,6 +648,50 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(a, 3)
   }
 
+  func testBitWidth() {
+    // UIntBox
+    XCTAssertEqual(UIntBox.bitWidth, UIntMax.bitWidth)
+
+    // Standard Integers
+    XCTAssertEqual(UIntMax.bitWidth, 64)
+    XCTAssertEqual(UInt.bitWidth, 64)
+    XCTAssertEqual(UInt64.bitWidth, 64)
+    XCTAssertEqual(UInt32.bitWidth, 32)
+    XCTAssertEqual(UInt16.bitWidth, 16)
+    XCTAssertEqual(UInt8.bitWidth,   8)
+
+    XCTAssertEqual(IntMax.bitWidth, 64)
+    XCTAssertEqual(Int.bitWidth, 64)
+    XCTAssertEqual(Int64.bitWidth, 64)
+    XCTAssertEqual(Int32.bitWidth, 32)
+    XCTAssertEqual(Int16.bitWidth, 16)
+    XCTAssertEqual(Int8.bitWidth,   8)
+
+    // Unsigned integer bitWidth lookup
+    XCTAssertEqual(bitWidthUnsigned(UInt()), UInt.bitWidth)
+
+    XCTAssertEqual(bitWidthUnsigned(CUnsignedChar()), UInt8.bitWidth)
+    XCTAssertEqual(bitWidthUnsigned(CUnsignedShort()), UInt16.bitWidth)
+    XCTAssertEqual(bitWidthUnsigned(CUnsignedInt()), UInt32.bitWidth)
+    XCTAssertEqual(bitWidthUnsigned(CUnsignedLong()), UInt.bitWidth)
+    XCTAssertEqual(bitWidthUnsigned(CUnsignedLongLong()), UInt64.bitWidth)
+
+    // Unsigned integer bitWidth calculation from max
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt8.max.toUIntMax()),   8)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt16.max.toUIntMax()), 16)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt32.max.toUIntMax()), 32)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt64.max.toUIntMax()), 64)
+
+    XCTAssertEqual(bitWidthFromUnsignedMax(1),  1)
+    XCTAssertEqual(bitWidthFromUnsignedMax(3),  2)
+    XCTAssertEqual(bitWidthFromUnsignedMax(15), 4)
+
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt8.max.toUIntMax()/2),       8)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt16.max.toUIntMax()/4),     16)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt32.max.toUIntMax()/456),   32)
+    XCTAssertEqual(bitWidthFromUnsignedMax(UInt64.max.toUIntMax()/10240), 64)
+  }
+
   func testBitwiseRightShift() {
     // Powers of 2
     XCTAssertEqual(UIntBox(7) >> 1, 3)
@@ -670,9 +704,9 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(UIntBox(1) >> 1, 0)
 
     // Shift off end
-    //    XCTAssertEqual(~UIntBox.allZeros >> UIntBox.bitWidth, 0)
+    XCTAssertEqual(((~UIntBox.allZeros) >> (UIntBox.bitWidth/2)) >> (UIntBox.bitWidth/2), 0)
     // A ridiculously large shiftee
-    //    XCTAssertEqual(UIntBox.max >> UIntBox.bitWidth/2, 0)
+    XCTAssertEqual(UIntBox.max >> (UIntBox.bitWidth/2), 4294967295)
 
     // fatal error: shift amount is larger than type size in bits
     //XCTAssertEqual(UIntBox(125) >> UIntBox.max, 0)
@@ -689,11 +723,12 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(UIntBox(0) << 0, 0)
 
     // Shift off end
-    //    XCTAssertEqual(UIntBox(1) << UIntBox.bitWidth, 0)
+    XCTAssertEqual((UIntBox(1) << (UIntBox.bitWidth/2)) << (UIntBox.bitWidth/2), 0)
     // A ridiculously large shiftee
-    //    XCTAssertEqual(UIntBox.max << UIntBox.bitWidth/2, 0)
+    XCTAssertEqual(UIntBox.max << (UIntBox.bitWidth/2), 18446744069414584320)
 
     // fatal error: shift amount is larger than type size in bits
+    //XCTAssertEqual(UIntBox(1) << UIntBox.bitWidth, 0)
     //XCTAssertEqual(UIntBox(23) << UIntBox.max, 0)
   }
 

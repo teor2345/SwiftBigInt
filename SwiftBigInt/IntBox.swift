@@ -17,9 +17,10 @@ public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, Integer
 
 }
 
-// Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntegral: _Integral, Hashable, _Incrementable /* _DisallowMixedSignArithmetic */ {
-
+/// Integers must conform to this protocol to be placed in a UIntBox
+public protocol UIntegral: _Integral, Hashable, _Incrementable {
+  /// I wanted to use _DisallowMixedSignArithmetic, but it has a hidden dependency on _BuiltinIntegerLiteralConvertible via _IntegerType
+  /// _BuiltinIntegerLiteralConvertible can never be satisfied in user code, because it requires init(Builtin.Int2048), and Builtin is not accessible from user code
 }
 
 // Types that can be 'boxed' into a struct

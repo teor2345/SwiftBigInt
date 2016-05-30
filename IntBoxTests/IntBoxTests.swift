@@ -530,7 +530,7 @@ class IntBoxTests: XCTestCase {
     XCTAssert(mOverflow)
   }
 
-  func testCompoundArithmeticAssignment() {
+  func testArithmeticCompoundAssignment() {
     var a = UIntBox(0)
 
     a += 1
@@ -629,7 +629,7 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(~UIntBox.allZeros, UIntBox.max)
   }
 
-  func testCompoundBitwiseAssignment() {
+  func testBitwiseCompoundAssignment() {
     var a = UIntBox(0)
 
     // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
@@ -732,7 +732,7 @@ class IntBoxTests: XCTestCase {
     //XCTAssertEqual(UIntBox(23) << UIntBox.max, 0)
   }
 
-  func testCompoundBitwiseShiftAssignment() {
+  func testBitwiseShiftCompoundAssignment() {
     var a = UIntBox(1)
 
     a <<= 2
@@ -742,12 +742,6 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(a, 2)
   }
 
-  func testHashable() {
-    XCTAssertEqual(UIntBox(0).hashValue, UIntBox(0).hashValue)
-
-    // It's possible some hash values will collide, so check a few
-    if (UIntBox(1).hashValue != UIntBox(2).hashValue) {
-      XCTAssertNotEqual(UIntBox(1), UIntBox(2))
     }
 
     if (UIntBox(3).hashValue != UIntBox(4).hashValue) {

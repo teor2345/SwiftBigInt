@@ -10,9 +10,6 @@
 // Passes through all operations to the underlying type
 // Used for testing purposes, and serves as a template for BigInts
 
-//import BitwiseShiftType
-//import FixedBitWidthType
-
 // Implementation Detail: shared protocols required for (U)IntBox values
 // We might have just been able to get away with using RawRepresentable,
 // but that wouldn't have worked for BigInts
@@ -22,7 +19,7 @@ public protocol Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerL
 
 
 // Extra Protocols specific to this framework
-public protocol IntegralExtra  /* : BitwiseShiftType, FixedBitWidthType */ {
+public protocol IntegralExtra: BitwiseShiftType /*, FixedBitWidthType */ {
 
 }
 
@@ -340,11 +337,9 @@ public func ^=(inout lhs: UIntBox, rhs: UIntBox) {
   lhs = lhs ^ rhs
 }
 
-/*
 // Surprisingly, the swift standard library doesn't have a bitwise shift protocol,
 // even though it has IntegerArithmeticType and BitwiseOperationsType
 extension UIntBox: BitwiseShiftType {}
-*/
 
 @warn_unused_result
 public func <<(lhs: UIntBox, rhs: UIntBox) -> UIntBox {

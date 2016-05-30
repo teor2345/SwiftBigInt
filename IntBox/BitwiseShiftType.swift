@@ -26,17 +26,17 @@ public protocol BitwiseShiftType {
 }
 
 // A generic implementation of bitwise right shift compound assignment
-public func >>=<T: BitwiseShiftType, U: T>(inout lhs: T, rhs: U) {
-  lhs = lhs >> T(rhs)
+public func >>=<T: BitwiseShiftType>(inout lhs: T, rhs: T) {
+  lhs = lhs >> rhs
 }
 
 // A generic implementation of bitwise left shift compound assignment
-public func <<=<T: BitwiseShiftType, U: T>(inout lhs: T, rhs: U) {
-  lhs = lhs << T(rhs)
+public func <<=<T: BitwiseShiftType>(inout lhs: T, rhs: T) {
+  lhs = lhs << rhs
 }
 
 // All integers already conform to this protocol
-extension UIntMax: BitwiseShiftType {}
+//extension UIntMax: BitwiseShiftType {} - redundant, UInt64 conforms
 extension UInt:    BitwiseShiftType {}
 
 extension UInt64:  BitwiseShiftType {}
@@ -44,7 +44,7 @@ extension UInt32:  BitwiseShiftType {}
 extension UInt16:  BitwiseShiftType {}
 extension UInt8:   BitwiseShiftType {}
 
-extension IntMax:  BitwiseShiftType {}
+//extension IntMax:  BitwiseShiftType {} - redundant, Int64 conforms
 extension Int:     BitwiseShiftType {}
 
 extension Int64:   BitwiseShiftType {}

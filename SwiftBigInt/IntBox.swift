@@ -18,7 +18,7 @@ public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, Integer
 }
 
 // Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntegral: _Integral, Hashable /* _DisallowMixedSignArithmetic */ {
+public protocol UIntegral: _Integral, Hashable, _Incrementable /* _DisallowMixedSignArithmetic */ {
 
 }
 
@@ -319,6 +319,21 @@ extension UIntBox: Hashable {
   /// **Axiom:** `x == y` implies `x.hashValue == y.hashValue`.
   public var hashValue: Int {
     return unboxedValue.hashValue
+  }
+}
+
+extension UIntBox: _Incrementable {
+  /// This protocol is an implementation detail of `ForwardIndexType`; do
+  /// not use it directly.
+  /// Oops!
+
+  /// Returns the next consecutive value in a discrete sequence of
+  /// `Self` values.
+  ///
+  /// - Requires: `self` has a well-defined successor.
+  @warn_unused_result
+  public func successor() -> UIntBox {
+    return UIntBox(self.unboxedValue.successor())
   }
 }
 

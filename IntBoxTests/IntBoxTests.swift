@@ -635,4 +635,14 @@ class IntBoxTests: XCTestCase {
       XCTAssertNotEqual(UIntBox(5), UIntBox(6))
     }
   }
+
+  func testSuccessor() {
+    XCTAssertEqual(UIntBox(0).successor(), 1)
+    XCTAssertEqual(UIntBox(1).successor(), 2)
+    XCTAssertEqual(UIntBox(3).successor().successor(), 5)
+
+    // Overflow wraps?
+    // Apparently
+    XCTAssertEqual(UIntBox.max.successor(), 0)
+  }
 }

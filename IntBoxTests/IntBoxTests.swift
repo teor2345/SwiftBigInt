@@ -643,14 +643,17 @@ class IntBoxTests: XCTestCase {
     var a = UIntBox(0)
 
     // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    // we define a type-specific version to silence this warning
     a |= 1
     XCTAssertEqual(a, 1)
 
     // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    // we define a type-specific version to silence this warning
     a &= 5
     XCTAssertEqual(a, 1)
 
     // the generic bitwise compound assignment operators are @warn_unused_result, but they do not return a result
+    // we define a type-specific version to silence this warning
     a ^= 2
     XCTAssertEqual(a, 3)
   }

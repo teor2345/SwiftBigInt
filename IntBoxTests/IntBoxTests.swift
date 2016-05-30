@@ -9,6 +9,10 @@
 
 import XCTest
 @testable import IntBox
+/*
+@testable import BitwiseShiftType
+@testable import FixedBitWidthType
+ */
 
 class IntBoxTests: XCTestCase {
     
@@ -656,6 +660,59 @@ class IntBoxTests: XCTestCase {
     // we define a type-specific version to silence this warning
     a ^= 2
     XCTAssertEqual(a, 3)
+  }
+
+  func testBitwiseRightShift() {
+    // Powers of 2
+    XCTAssertEqual(UIntBox(7) >> 1, 3)
+    XCTAssertEqual(UIntBox(8) >> 2, 2)
+
+    // Zeroes
+    XCTAssertEqual(UIntBox(1) >> 0, 1)
+    XCTAssertEqual(UIntBox(0) >> 1, 0)
+    XCTAssertEqual(UIntBox(0) >> 0, 0)
+    XCTAssertEqual(UIntBox(1) >> 1, 0)
+
+/*
+    // Shift off end
+    XCTAssertEqual(~UIntBox.allZeros >> UIntBox.bitWidth, 0)
+    // A ridiculously large shift
+    XCTAssertEqual(UIntBox(125) >> UIntBox.max, 0)
+    // A ridiculously large shiftee
+    XCTAssertEqual(UIntBox.max >> UIntBox.bitWidth/2, 0)
+*/
+  }
+
+  func testBitwiseLeftShift() {
+    // Powers of 2
+    XCTAssertEqual(UIntBox(1) << 1, 2)
+    XCTAssertEqual(UIntBox(1) << 4, 16)
+
+    // Zeroes
+    XCTAssertEqual(UIntBox(1) << 0, 1)
+    XCTAssertEqual(UIntBox(0) << 1, 0)
+    XCTAssertEqual(UIntBox(0) << 0, 0)
+
+/*
+    // Shift off end
+    XCTAssertEqual(UIntBox(1) << UIntBox.bitWidth, 0)
+    // A ridiculously large shift
+    XCTAssertEqual(UIntBox(23) << UIntBox.max, 0)
+    // A ridiculously large shiftee
+    XCTAssertEqual(UIntBox.max << UIntBox.bitWidth/2, 0)
+*/
+  }
+
+  func testCompoundBitwiseShiftAssignment() {
+    var a = UIntBox(1)
+
+/*
+    a <<= 2
+    XCTAssertEqual(a, 4)
+
+    a >>= 1
+    XCTAssertEqual(a, 2)
+*/
   }
 
   func testHashable() {

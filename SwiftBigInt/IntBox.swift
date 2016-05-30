@@ -10,15 +10,25 @@
 // Passes through all operations to the underlying type
 // Used for testing purposes, and serves as a template for BigInts
 
+//import BitwiseShiftType
+//import FixedBitWidthType
+
 // Implementation Detail: shared protocols required for (U)IntBox values
 // We might have just been able to get away with using RawRepresentable,
 // but that wouldn't have worked for BigInts
-public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
+public protocol Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
 
 }
 
+
+// Extra Protocols specific to this framework
+public protocol IntegralExtra  /* : BitwiseShiftType, FixedBitWidthType */ {
+
+}
+
+
 // Integers must conform to this protocol to be placed in a UIntBox
-public protocol UIntegral: _Integral, Hashable, _Incrementable {
+public protocol UIntegral: Integral, IntegralExtra, Hashable, _Incrementable {
   // I wanted to use _DisallowMixedSignArithmetic, but it has a hidden dependency on _BuiltinIntegerLiteralConvertible via _IntegerType
   // _BuiltinIntegerLiteralConvertible can never be satisfied in user code, because it requires init(Builtin.Int2048), and Builtin is not accessible from user code
 }
@@ -31,6 +41,7 @@ public protocol Boxable {
   var unboxedValue: UnboxedType { get /* set */ }
 }
 
+// A type that boxes UIntMax
 public struct UIntBox: UIntegral {
 
   // Boxable
@@ -328,6 +339,26 @@ public func |=(inout lhs: UIntBox, rhs: UIntBox) {
 public func ^=(inout lhs: UIntBox, rhs: UIntBox) {
   lhs = lhs ^ rhs
 }
+
+/*
+// Surprisingly, the swift standard library doesn't have a bitwise shift protocol,
+// even though it has IntegerArithmeticType and BitwiseOperationsType
+extension UIntBox: BitwiseShiftType {}
+*/
+
+@warn_unused_result
+public func <<(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(lhs.unboxedValue << rhs.unboxedValue)
+}
+
+@warn_unused_result
+public func >>(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(lhs.unboxedValue >> rhs.unboxedValue)
+}
+
+/*
+extension UIntBox: FixedBitWidthType { static let bitWidth = UnboxedType.bitWidth }
+*/
 
 extension UIntBox: Hashable {
   /// Instances of conforming types provide an integer `hashValue` and

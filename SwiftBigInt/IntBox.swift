@@ -13,7 +13,7 @@
 // Implementation Detail: shared protocols required for (U)IntBox values
 // We might have just been able to get away with using RawRepresentable,
 // but that wouldn't have worked for BigInts
-public protocol _Integral: IntegerArithmeticType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
+public protocol _Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
 
 }
 
@@ -247,7 +247,67 @@ public func /(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
 /// arithmetic overflow (except in -Ounchecked builds).
 @warn_unused_result
 public func %(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
-  return UIntBox(integerLiteral: lhs.unboxedValue % rhs.unboxedValue)
+  return UIntBox(lhs.unboxedValue % rhs.unboxedValue)
+}
+
+extension UIntBox: BitwiseOperationsType {
+  /// A set type with O(1) standard bitwise operators.
+  /// O(1) complexity can not be achieved for BigInts.
+
+  /// The empty bitset.
+  ///
+  /// Also the [identity element](http://en.wikipedia.org/wiki/Identity_element) for `|` and
+  /// `^`, and the [fixed point](http://en.wikipedia.org/wiki/Fixed_point_(mathematics)) for
+  /// `&`.
+  ///
+  /// BigInts have multiple valid representations of the empty bitset.
+  public static var allZeros: UIntBox {
+    return UIntBox(0)
+  }
+}
+
+/// Returns the intersection of bits set in `lhs` and `rhs`.
+///
+/// - Complexity: O(1).
+/// O(1) complexity can not be achieved for BigInts.
+///
+/// BigInts have multiple valid representations of the intersection of two bitsets.
+@warn_unused_result
+public func &(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(lhs.unboxedValue & rhs.unboxedValue)
+}
+
+/// Returns the union of bits set in `lhs` and `rhs`.
+///
+/// - Complexity: O(1).
+/// O(1) complexity can not be achieved for BigInts.
+///
+/// BigInts have multiple valid representations of the union of two bitsets.
+@warn_unused_result
+public func |(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(lhs.unboxedValue | rhs.unboxedValue)
+}
+
+/// Returns the bits that are set in exactly one of `lhs` and `rhs`.
+///
+/// - Complexity: O(1).
+/// O(1) complexity can not be achieved for BigInts.
+///
+/// BigInts have multiple valid representations of the xor of two bitsets.
+@warn_unused_result
+public func ^(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(lhs.unboxedValue ^ rhs.unboxedValue)
+}
+
+/// Returns `x ^ ~Self.allZeros`.
+///
+/// - Complexity: O(1).
+/// O(1) complexity can not be achieved for BigInts.
+///
+/// BigInts have multiple valid representations of the complement of a bitset.
+@warn_unused_result
+prefix public func ~(x: UIntBox) -> UIntBox {
+  return UIntBox(~x.unboxedValue)
 }
 
 // Essential

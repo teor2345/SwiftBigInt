@@ -539,4 +539,83 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(m, 0)
     XCTAssert(mOverflow)
   }
+
+  func testAllZeroes() {
+    XCTAssertEqual(UIntBox.allZeros, 0)
+  }
+
+  func testAnd() {
+    // Same Value
+    XCTAssertEqual(UIntBox(1) & UIntBox(1), UIntBox(1))
+
+    // Zero
+    XCTAssertEqual(UIntBox(32) & UIntBox.allZeros, UIntBox.allZeros)
+
+    // Distinct Bits
+    XCTAssertEqual(UIntBox(2) & UIntBox(4), UIntBox.allZeros)
+
+    // Bitmask
+    XCTAssertEqual(UIntBox(15) & UIntBox(8), UIntBox(8))
+
+    // Mismatching Bits
+    XCTAssertEqual(UIntBox(5) & UIntBox(22), UIntBox(4))
+
+    // Complement
+    XCTAssertEqual(~UIntBox(1) & UIntBox(1), UIntBox.allZeros)
+  }
+
+  func testOr() {
+    // Same Value
+    XCTAssertEqual(UIntBox(1) | UIntBox(1), UIntBox(1))
+
+    // Zero
+    XCTAssertEqual(UIntBox(32) | UIntBox.allZeros, UIntBox(32))
+
+    // Distinct Bits
+    XCTAssertEqual(UIntBox(2) | UIntBox(4), UIntBox(6))
+
+    // Bitmask
+    XCTAssertEqual(UIntBox(15) | UIntBox(8), UIntBox(15))
+
+    // Mismatching Bits
+    XCTAssertEqual(UIntBox(5) | UIntBox(22), UIntBox(23))
+
+    // Complement
+    XCTAssertEqual(~UIntBox(2) | UIntBox(2), ~UIntBox.allZeros)
+  }
+
+  func testXor() {
+    // Same Value
+    XCTAssertEqual(UIntBox(1) ^ UIntBox(1), UIntBox.allZeros)
+
+    // Zero
+    XCTAssertEqual(UIntBox(32) ^ UIntBox.allZeros, UIntBox(32))
+
+    // Distinct Bits
+    XCTAssertEqual(UIntBox(2) ^ UIntBox(4), UIntBox(6))
+
+    // Bitmask
+    XCTAssertEqual(UIntBox(15) ^ UIntBox(8), UIntBox(7))
+
+    // Mismatching Bits
+    XCTAssertEqual(UIntBox(5) ^ UIntBox(22), UIntBox(19))
+
+    // Complement
+    XCTAssertEqual(~UIntBox(4) ^ UIntBox(4), ~UIntBox.allZeros)
+  }
+
+  func testNot() {
+    XCTAssertEqual(~UIntBox(64) & UIntBox(64), UIntBox.allZeros)
+    XCTAssertEqual(~UIntBox(128) | UIntBox(128), ~UIntBox.allZeros)
+    XCTAssertEqual(~UIntBox(256) ^ UIntBox(256), ~UIntBox.allZeros)
+
+    // All bits is greater than no bits?
+    // Apparently
+    XCTAssertGreaterThan(~UIntBox.allZeros, UIntBox.allZeros)
+
+    // All bits is the maximum?
+    // Apparently
+    XCTAssertEqual(~UIntBox(1), UIntBox.max - 1)
+    XCTAssertEqual(~UIntBox.allZeros, UIntBox.max)
+  }
 }

@@ -342,7 +342,7 @@ class IntBoxTests: XCTestCase {
     let d = UIntBox.max
     let (e, eOverflow) = UIntBox.addWithOverflow(d, d)
 
-    // Two's Complement?
+    // Overflow wraps?
     // Apparently
     XCTAssertEqual(e, UIntBox(v: (UIntBox.max - 1)))
     XCTAssert(eOverflow)
@@ -375,7 +375,7 @@ class IntBoxTests: XCTestCase {
     // Underflow
     let (d, dOverflow) = UIntBox.subtractWithOverflow(a, b)
 
-    // Two's Complement?
+    // Overflow wraps?
     // Apparently
     XCTAssertEqual(d, UIntBox(v: (UIntBox.max - (b - a) + 1)))
     XCTAssert(dOverflow)
@@ -409,7 +409,7 @@ class IntBoxTests: XCTestCase {
     let d = UIntBox.max
     let (e, eOverflow) = UIntBox.multiplyWithOverflow(a, d)
 
-    // Two's Complement?
+    // Overflow wraps?
     // Apparently
     XCTAssertEqual(e, UIntBox(v: (UIntBox.max - a + 1)))
     XCTAssert(eOverflow)

@@ -326,6 +326,7 @@ class IntBoxTests: XCTestCase {
   }
 
   func testAddWithOverflow() {
+    // No Overflow
     let a = UIntBox(integerLiteral: 32)
     let b = UIntBox(integerLiteral: 85)
     let (c, cOverflow) = UIntBox.addWithOverflow(a, b)
@@ -336,6 +337,15 @@ class IntBoxTests: XCTestCase {
     // For Completeness
     XCTAssert(a == 32)
     XCTAssert(b == 85)
+
+    // Overflow
+    let d = UIntBox.max
+    let (e, eOverflow) = UIntBox.addWithOverflow(d, d)
+
+    // Two's Complement?
+    // Apparently
+    XCTAssert(e == UIntBox(UIntBox.max - 1))
+    XCTAssert(eOverflow)
   }
 
   func testSubtract() {
@@ -361,6 +371,14 @@ class IntBoxTests: XCTestCase {
     // For Completeness
     XCTAssert(a == 32)
     XCTAssert(b == 85)
+
+    // Underflow
+    let (d, dOverflow) = UIntBox.subtractWithOverflow(a, b)
+
+    // Two's Complement?
+    // Apparently
+    XCTAssert(d == UIntBox(UIntBox.max - (b - a) + 1))
+    XCTAssert(dOverflow)
   }
 
   func testMultiply() {
@@ -386,6 +404,15 @@ class IntBoxTests: XCTestCase {
     // For Completeness
     XCTAssert(a == 6)
     XCTAssert(b == 7)
+
+    // Overflow
+    let d = UIntBox.max
+    let (e, eOverflow) = UIntBox.multiplyWithOverflow(a, d)
+
+    // Two's Complement?
+    // Apparently
+    XCTAssert(e == UIntBox(UIntBox.max - a + 1))
+    XCTAssert(eOverflow)
   }
 
   func testDivide() {
@@ -428,6 +455,31 @@ class IntBoxTests: XCTestCase {
 
     XCTAssert(f == 9)
     XCTAssertFalse(fOverflow)
+
+    // Almost all unsigned divisions do not overflow
+    let g = UIntBox.max
+    let h = UIntBox(integerLiteral: 1)
+    let (i, iOverflow) = UIntBox.divideWithOverflow(g, h)
+    let (j, jOverflow) = UIntBox.divideWithOverflow(h, g)
+
+    XCTAssert(i == UIntBox.max)
+    XCTAssertFalse(iOverflow)
+
+    XCTAssert(j == 0)
+    XCTAssertFalse(jOverflow)
+
+    // Divide by Zero "Overflows"
+    let k = UIntBox(integerLiteral: 0)
+    let (l, lOverflow) = UIntBox.divideWithOverflow(k, h)
+    let (m, mOverflow) = UIntBox.divideWithOverflow(h, k)
+
+    XCTAssert(l == 0)
+    XCTAssertFalse(lOverflow)
+
+    // What is 1/0?
+    // 0, apparently
+    XCTAssert(m == 0)
+    XCTAssert(mOverflow)
   }
 
   func testRemainder() {
@@ -453,6 +505,39 @@ class IntBoxTests: XCTestCase {
     // For Completeness
     XCTAssert(a == 32)
     XCTAssert(b == 85)
+
+    // Exact
+    let d = UIntBox(integerLiteral: 45)
+    let e = UIntBox(integerLiteral: 5)
+    let (f, fOverflow) = UIntBox.remainderWithOverflow(d, e)
+
+    XCTAssert(f == 0)
+    XCTAssertFalse(fOverflow)
+
+    // Almost all unsigned remainders do not overflow
+    let g = UIntBox.max
+    let h = UIntBox(integerLiteral: 1)
+    let (i, iOverflow) = UIntBox.remainderWithOverflow(g, h)
+    let (j, jOverflow) = UIntBox.remainderWithOverflow(h, g)
+
+    XCTAssert(i == 0)
+    XCTAssertFalse(iOverflow)
+
+    XCTAssert(j == 1)
+    XCTAssertFalse(jOverflow)
+
+    // Remainder of Divide by Zero "Overflows"
+    let k = UIntBox(integerLiteral: 0)
+    let (l, lOverflow) = UIntBox.remainderWithOverflow(k, h)
+    let (m, mOverflow) = UIntBox.remainderWithOverflow(h, k)
+
+    XCTAssert(l == 0)
+    XCTAssertFalse(lOverflow)
+
+    // What is 1/0?
+    // 0 remainder 0, apparently
+    XCTAssert(m == 0)
+    XCTAssert(mOverflow)
   }
 
 /*

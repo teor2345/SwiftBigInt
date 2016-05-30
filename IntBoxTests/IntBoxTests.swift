@@ -22,14 +22,34 @@ class IntBoxTests: XCTestCase {
     super.tearDown()
   }
 
-  func testIntegerLiteralConvertible() {
-    _ = UIntBox(integerLiteral: 0)
-    _ = UIntBox(integerLiteral: 1)
-    _ = UIntBox(integerLiteral: 2)
-    _ = UIntBox(integerLiteral: 63)
-    _ = UIntBox(integerLiteral: 64)
-    _ = UIntBox(integerLiteral: 126)
-    _ = UIntBox(integerLiteral: 127)
+  func testInitEmpty() {
+    let a = UIntBox()
+
+    XCTAssert(a.unboxedValue == 0)
+  }
+
+  func testMax() {
+    let a = UIntBox.max
+
+    XCTAssert(a.unboxedValue == UIntBox.UnboxedType.max)
+  }
+
+  func testMin() {
+    let a = UIntBox.min
+
+    XCTAssert(a.unboxedValue == UIntBox.UnboxedType.min)
+  }
+
+  func testInitUIntBox() {
+    let a = UIntBox()
+    let b = UIntBox(a)
+    let c = UIntBox(UIntBox.max)
+    let d = UIntBox(UIntBox.min)
+
+    XCTAssert(a.unboxedValue == 0)
+    XCTAssert(b.unboxedValue == 0)
+    XCTAssert(c.unboxedValue == UIntBox.UnboxedType.max)
+    XCTAssert(d.unboxedValue == UIntBox.UnboxedType.min)
   }
 
   func testBoxable() {
@@ -57,6 +77,16 @@ class IntBoxTests: XCTestCase {
     XCTAssert(a.unboxedValue == 7)
     XCTAssert(a2.unboxedValue == 7)
     XCTAssert(a3.unboxedValue == 7)
+  }
+
+  func testIntegerLiteralConvertible() {
+    _ = UIntBox(integerLiteral: 0)
+    _ = UIntBox(integerLiteral: 1)
+    _ = UIntBox(integerLiteral: 2)
+    _ = UIntBox(integerLiteral: 63)
+    _ = UIntBox(integerLiteral: 64)
+    _ = UIntBox(integerLiteral: 126)
+    _ = UIntBox(integerLiteral: 127)
   }
 
   func testCustomStringConvertible() {
@@ -251,6 +281,178 @@ class IntBoxTests: XCTestCase {
     // Interchangeability
     XCTAssert(c >= c2)
     XCTAssert(c2 >= c)
+  }
+
+  func testToUIntMax() {
+    let a = UIntBox(integerLiteral: 24)
+    let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
+    let c = UIntBox.max
+
+    XCTAssert(a.toUIntMax() == 24)
+    XCTAssert(a == 24)
+
+    XCTAssert(b.toUIntMax() == 0)
+    XCTAssert(b == 0)
+
+    XCTAssert(c.toUIntMax() == UIntBox.max.unboxedValue)
+    XCTAssert(c == UIntBox.max)
+  }
+
+  func testToIntMax() {
+    let a = UIntBox(integerLiteral: 24)
+    let b = UIntBox(integerLiteral: UIntBox.UnboxedType())
+    let c = IntMax.max
+
+    XCTAssert(a.toIntMax() == 24)
+    XCTAssert(a == 24)
+
+    XCTAssert(b.toIntMax() == 0)
+    XCTAssert(b == 0)
+
+    XCTAssert(c.toIntMax() == IntMax.max)
+    XCTAssert(c == IntMax.max)
+  }
+
+  func testAdd() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let c = a + b
+
+    XCTAssert(c == 117)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+  }
+
+  func testAddWithOverflow() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let (c, cOverflow) = UIntBox.addWithOverflow(a, b)
+
+    XCTAssert(c == 117)
+    XCTAssertFalse(cOverflow)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+  }
+
+  func testSubtract() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let c = b - a
+
+    XCTAssert(c == 53)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+  }
+
+  func testSubtractWithOverflow() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let (c, cOverflow) = UIntBox.subtractWithOverflow(b, a)
+
+    XCTAssert(c == 53)
+    XCTAssertFalse(cOverflow)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+  }
+
+  func testMultiply() {
+    let a = UIntBox(integerLiteral: 6)
+    let b = UIntBox(integerLiteral: 7)
+    let c = a * b
+
+    XCTAssert(c == 42)
+
+    // For Completeness
+    XCTAssert(a == 6)
+    XCTAssert(b == 7)
+  }
+
+  func testMultiplyWithOverflow() {
+    let a = UIntBox(integerLiteral: 6)
+    let b = UIntBox(integerLiteral: 7)
+    let (c, cOverflow) = UIntBox.multiplyWithOverflow(a, b)
+
+    XCTAssert(c == 42)
+    XCTAssertFalse(cOverflow)
+
+    // For Completeness
+    XCTAssert(a == 6)
+    XCTAssert(b == 7)
+  }
+
+  func testDivide() {
+    // Inexact - Round Down
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let c = b / a
+
+    XCTAssert(c == 2)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+
+    // Exact
+    let d = UIntBox(integerLiteral: 45)
+    let e = UIntBox(integerLiteral: 5)
+    let f = d / e
+
+    XCTAssert(f == 9)
+  }
+
+  func testDivideWithOverflow() {
+    // Inexact - Round Down
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let (c, cOverflow) = UIntBox.divideWithOverflow(b, a)
+
+    XCTAssert(c == 2)
+    XCTAssertFalse(cOverflow)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+
+    // Exact
+    let d = UIntBox(integerLiteral: 45)
+    let e = UIntBox(integerLiteral: 5)
+    let (f, fOverflow) = UIntBox.divideWithOverflow(d, e)
+
+    XCTAssert(f == 9)
+    XCTAssertFalse(fOverflow)
+  }
+
+  func testRemainder() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let c = b % a
+
+    XCTAssert(c == 21)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
+  }
+
+  func testRemainderWithOverflow() {
+    let a = UIntBox(integerLiteral: 32)
+    let b = UIntBox(integerLiteral: 85)
+    let (c, cOverflow) = UIntBox.remainderWithOverflow(b, a)
+
+    XCTAssert(c == 21)
+    XCTAssertFalse(cOverflow)
+
+    // For Completeness
+    XCTAssert(a == 32)
+    XCTAssert(b == 85)
   }
 
 /*

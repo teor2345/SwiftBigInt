@@ -11,7 +11,9 @@
 // Used for testing purposes, and serves as a template for BigInts
 
 // Implementation Detail: shared protocols required for (U)IntBox values
-public protocol _Integral: Comparable, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
+// We might have just been able to get away with using RawRepresentable,
+// but that wouldn't have worked for BigInts
+public protocol _Integral: IntegerArithmeticType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible /* IntegerArithmeticType, BitwiseOperationsType, IntegerLiteralConvertible, CustomStringConvertible, CustomDebugStringConvertible, RawRepresentable */ {
 
 }
 
@@ -20,39 +22,228 @@ public protocol UIntegral: _Integral /*, _DisallowMixedSignArithmetic */ {
 
 }
 
-// Boxable Types
+// Types that can be 'boxed' into a struct
 public protocol Boxable {
-  associatedtype BoxedType
-  var unboxedValue: BoxedType { get /* set */ }
+  // The type that is in the box
+  associatedtype UnboxedType
+  // The value that is in the box
+  var unboxedValue: UnboxedType { get /* set */ }
 }
 
-public struct UIntBox: UIntegral, Boxable {
-  public typealias BoxedType = UIntMax
-  public typealias IntegerLiteralType = UIntBox.BoxedType
-  public var unboxedValue: UIntBox.BoxedType
+public struct UIntBox: UIntegral, Boxable /* , like UInt64 */ {
 
+  // Boxable
+  //
+  // The type that is in the box
+  public typealias UnboxedType = UIntMax
+  // The value that is in the box
+  public var unboxedValue: UIntBox.UnboxedType
+
+  /// Create an instance initialized to zero.
+  public init() {
+    unboxedValue = 0
+  }
+
+  /// Like UInt64
+
+  /// Create an instance initialized to `value`.
+  public init(_ value: UIntBox) {
+    unboxedValue = value.unboxedValue
+  }
+
+  /// Create an instance initialized to `value`, a builtin 2048-bit signed type
+  /// Only usable by the swift standard library
+  /// At some point, we should roll our own equivalent initialiser
+  ///public init(_builtinIntegerLiteral value: Builtin.Int2048)
+
+
+  /// The maximum possible value that can be stored in a UIntBox
+  /// max is not relevant for BigInts
+  public static var max: UIntBox {
+    return UIntBox(UnboxedType.max)
+  }
+
+  /// The minimum possible value that can be stored in a UIntBox
+  /// min is not relevant for BigInts
+  public static var min: UIntBox {
+    return UIntBox(UnboxedType.min)
+  }
+}
+
+extension UIntBox: IntegerLiteralConvertible {
+  /// Conforming types can be initialized with integer literals.
+
+  public typealias IntegerLiteralType = UIntBox.UnboxedType
+
+  /// Create an instance initialized to `value`.
   public init(integerLiteral value: UIntBox.IntegerLiteralType) {
     unboxedValue = value
   }
+}
 
+extension UIntBox /* : partial UnsignedIntegerType conformance */ {
+  /// A set of common requirements for Swift's unsigned integer types.
+
+  /// Represent this number using Swift's widest native unsigned
+  /// integer type.
+  @warn_unused_result
+  public func toUIntMax() -> UIntMax {
+    return unboxedValue
+  }
+
+  /// Convert from Swift's widest unsigned integer type, trapping on
+  /// overflow.
+  public init(_ value: UIntMax) {
+    unboxedValue = value
+  }
+}
+
+extension UIntBox: CustomStringConvertible {
+  /// A type with a customized textual representation.
+
+  /// A textual representation of `self`.
   public var description: String {
     return String(unboxedValue)
   }
+}
 
+extension UIntBox: CustomDebugStringConvertible {
+  /// A type with a customized textual representation suitable for
+  /// debugging purposes.
+
+  /// A textual representation of `self`, suitable for debugging.
   public var debugDescription: String {
-    let classText = String(UIntBox) + "(" + String(BoxedType) + ")"
+    let classText = String(UIntBox) + "(" + String(UnboxedType) + ")"
     return classText + ": " + String(reflecting: unboxedValue)
   }
 }
 
+/// Equatable
+///
+/// Instances of conforming types can be compared for value equality
+/// using operators `==` and `!=`.
+///
+/// When adopting `Equatable`, only the `==` operator is required to be
+/// implemented.  The standard library provides an implementation for `!=`.
+///
+/// Returns `true` if `lhs` is equal to `rhs`.
+///
+/// **Equality implies substitutability**.  When `x == y`, `x` and
+/// `y` are interchangeable in any code that only depends on their
+/// values.
+///
+/// Class instance identity as distinguished by triple-equals `===`
+/// is notably not part of an instance's value.  Exposing other
+/// non-value aspects of `Equatable` types is discouraged, and any
+/// that *are* exposed should be explicitly pointed out in
+/// documentation.
 @warn_unused_result
 public func ==(lhs: UIntBox, rhs: UIntBox) -> Bool {
   return lhs.unboxedValue == rhs.unboxedValue
 }
 
+/// Comparable
+///
+/// Instances of conforming types can be compared using relational
+/// operators, which define a [strict total order](http://en.wikipedia.org/wiki/Total_order#Strict_total_order).
+///
+/// A type conforming to `Comparable` need only supply the `<` and
+/// `==` operators; default implementations of `<=`, `>`, `>=`, and
+/// `!=` are supplied by the standard library:
 @warn_unused_result
 public func <(lhs: UIntBox, rhs: UIntBox) -> Bool {
   return lhs.unboxedValue < rhs.unboxedValue
+}
+
+extension UIntBox: IntegerArithmeticType {
+  /// The common requirements for types that support integer arithmetic.
+
+  /// Explicitly convert to `IntMax`, trapping on overflow (except in
+  /// -Ounchecked builds).
+  @warn_unused_result
+  public func toIntMax() -> IntMax {
+    return Int64(unboxedValue)
+  }
+
+  /// Adds `lhs` and `rhs`, returning the result and a `Bool` that is
+  /// `true` iff the operation caused an arithmetic overflow.
+  public static func addWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
+    let (result, overflow) = UnboxedType.addWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
+    // Can we skip the boxing if overflow is true?
+    // Does Swift have defined semantics for overflow?
+    return (UIntBox(integerLiteral: result), overflow)
+  }
+
+  /// Subtracts `lhs` and `rhs`, returning the result and a `Bool` that is
+  /// `true` iff the operation caused an arithmetic overflow.
+  public static func subtractWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
+    let (result, overflow) = UnboxedType.subtractWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
+    // Can we skip the boxing if overflow is true?
+    // Does Swift have defined semantics for overflow?
+    return (UIntBox(integerLiteral: result), overflow)
+  }
+
+  /// Multiplies `lhs` and `rhs`, returning the result and a `Bool` that is
+  /// `true` iff the operation caused an arithmetic overflow.
+  public static func multiplyWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
+    let (result, overflow) = UnboxedType.multiplyWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
+    // Can we skip the boxing if overflow is true?
+    // Does Swift have defined semantics for overflow?
+    return (UIntBox(integerLiteral: result), overflow)
+  }
+
+  /// Divides `lhs` and `rhs`, returning the result and a `Bool` that is
+  /// `true` iff the operation caused an arithmetic overflow.
+  public static func divideWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
+    let (result, overflow) = UnboxedType.divideWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
+    // Can we skip the boxing if overflow is true?
+    // Does Swift have defined semantics for overflow?
+    return (UIntBox(integerLiteral: result), overflow)
+  }
+
+  /// Divides `lhs` and `rhs`, returning the remainder and a `Bool` that is
+  /// `true` iff the operation caused an arithmetic overflow.
+  public static func remainderWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
+    let (result, overflow) = UnboxedType.remainderWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
+    // Can we skip the boxing if overflow is true?
+    // Does Swift have defined semantics for overflow?
+    return (UIntBox(integerLiteral: result), overflow)
+  }
+}
+
+/// Adds `lhs` and `rhs`, returning the result and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+@warn_unused_result
+public func +(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(integerLiteral: lhs.unboxedValue + rhs.unboxedValue)
+}
+
+/// Subtracts `lhs` and `rhs`, returning the result and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+@warn_unused_result
+public func -(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(integerLiteral: lhs.unboxedValue - rhs.unboxedValue)
+}
+
+/// Multiplies `lhs` and `rhs`, returning the result and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+@warn_unused_result
+public func *(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(integerLiteral: lhs.unboxedValue * rhs.unboxedValue)
+}
+
+/// Divides `lhs` and `rhs`, returning the result and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+@warn_unused_result
+public func /(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(integerLiteral: lhs.unboxedValue / rhs.unboxedValue)
+}
+
+/// Divides `lhs` and `rhs`, returning the remainder and trapping in case of
+/// arithmetic overflow (except in -Ounchecked builds).
+@warn_unused_result
+public func %(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return UIntBox(integerLiteral: lhs.unboxedValue % rhs.unboxedValue)
 }
 
 // Essential

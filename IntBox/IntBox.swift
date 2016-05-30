@@ -427,6 +427,8 @@ extension UIntBox: _Incrementable {
 // Integral Logarithms
 // Fractional Exponents, Fractional Logarithms
 
+// Set Bit Count
+
 // Conversion
 // SignedIntegerType: toIntMax, init(IntMax)
 //   Inherit: IntegerType, SignedNumberType

@@ -669,28 +669,28 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(Int8.bitWidth,   8)
 
     // Unsigned integer bitWidth lookup
-    XCTAssertEqual(bitWidthUnsigned(UInt()), UInt.bitWidth)
+    XCTAssertEqual(UInt.bitWidthUnsigned(), UInt.bitWidth)
 
-    XCTAssertEqual(bitWidthUnsigned(CUnsignedChar()), UInt8.bitWidth)
-    XCTAssertEqual(bitWidthUnsigned(CUnsignedShort()), UInt16.bitWidth)
-    XCTAssertEqual(bitWidthUnsigned(CUnsignedInt()), UInt32.bitWidth)
-    XCTAssertEqual(bitWidthUnsigned(CUnsignedLong()), UInt.bitWidth)
-    XCTAssertEqual(bitWidthUnsigned(CUnsignedLongLong()), UInt64.bitWidth)
+    XCTAssertEqual(CUnsignedChar.bitWidthUnsigned(), UInt8.bitWidth)
+    XCTAssertEqual(CUnsignedShort.bitWidthUnsigned(), UInt16.bitWidth)
+    XCTAssertEqual(CUnsignedInt.bitWidthUnsigned(), UInt32.bitWidth)
+    XCTAssertEqual(CUnsignedLong.bitWidthUnsigned(), UInt.bitWidth)
+    XCTAssertEqual(CUnsignedLongLong.bitWidthUnsigned(), UInt64.bitWidth)
 
     // Unsigned integer bitWidth calculation from max
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt8.max.toUIntMax()),   8)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt16.max.toUIntMax()), 16)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt32.max.toUIntMax()), 32)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt64.max.toUIntMax()), 64)
+    XCTAssertEqual(UInt8.bitWidthFromUnsignedMax(UInt8.max.toUIntMax()),    8)
+    XCTAssertEqual(UInt16.bitWidthFromUnsignedMax(UInt16.max.toUIntMax()), 16)
+    XCTAssertEqual(UInt32.bitWidthFromUnsignedMax(UInt32.max.toUIntMax()), 32)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(UInt64.max.toUIntMax()), 64)
 
-    XCTAssertEqual(bitWidthFromUnsignedMax(1),  1)
-    XCTAssertEqual(bitWidthFromUnsignedMax(3),  2)
-    XCTAssertEqual(bitWidthFromUnsignedMax(15), 4)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(1),  1)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(3),  2)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(15), 4)
 
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt8.max.toUIntMax()/2),       8)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt16.max.toUIntMax()/4),     16)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt32.max.toUIntMax()/456),   32)
-    XCTAssertEqual(bitWidthFromUnsignedMax(UInt64.max.toUIntMax()/10240), 64)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(UInt8.max.toUIntMax()/2),       8)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(UInt16.max.toUIntMax()/4),     16)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(UInt32.max.toUIntMax()/456),   32)
+    XCTAssertEqual(UInt64.bitWidthFromUnsignedMax(UInt64.max.toUIntMax()/10240), 64)
   }
 
   func testBitwiseRightShift() {

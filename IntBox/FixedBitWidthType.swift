@@ -6,7 +6,6 @@
 //  Copyright © 2016 teor.
 //  GPL version 3 or later.
 //
-
 // Surprisingly, the swift standard library doesn't tell you how many bits are in an integer,
 // even though it's part of most type names, and the standard libarary has IntegerArithmeticType and BitwiseOperationsType
 

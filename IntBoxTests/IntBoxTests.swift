@@ -6,6 +6,7 @@
 //  Copyright © 2016 teor.
 //  GPL version 3 or later.
 //
+// Unit tests for UIntBox
 
 import XCTest
 @testable import IntBox

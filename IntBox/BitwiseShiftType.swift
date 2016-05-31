@@ -6,7 +6,6 @@
 //  Copyright © 2016 teor.
 //  GPL version 3 or later.
 //
-
 // Surprisingly, the swift standard library doesn't have a bitwise shift protocol,
 // even though it has IntegerArithmeticType and BitwiseOperationsType
 

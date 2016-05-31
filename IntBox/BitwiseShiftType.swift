@@ -35,17 +35,16 @@ public func <<=<T: BitwiseShiftType>(inout lhs: T, rhs: T) {
 }
 
 // All integers already conform to this protocol
-//extension UIntMax: BitwiseShiftType {} - redundant, UInt64 conforms
-extension UInt:    BitwiseShiftType {}
 
+extension UInt:    BitwiseShiftType {}
+//extension UIntMax: BitwiseShiftType {} - redundant, UInt64 conforms
 extension UInt64:  BitwiseShiftType {}
 extension UInt32:  BitwiseShiftType {}
 extension UInt16:  BitwiseShiftType {}
 extension UInt8:   BitwiseShiftType {}
 
-//extension IntMax:  BitwiseShiftType {} - redundant, Int64 conforms
 extension Int:     BitwiseShiftType {}
-
+//extension IntMax:  BitwiseShiftType {} - redundant, Int64 conforms
 extension Int64:   BitwiseShiftType {}
 extension Int32:   BitwiseShiftType {}
 extension Int16:   BitwiseShiftType {}

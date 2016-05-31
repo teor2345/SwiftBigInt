@@ -743,6 +743,152 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(a, 2)
   }
 
+  // return the closest representable UIntMax value
+  func toUIntMaxSaturatingWithFloat(x: Float) -> UIntMax {
+    if x >= Float(UIntMax.max) {
+      return UIntMax.max
+    }
+    if x <= Float(UIntMax.min) {
+      return UIntMax.min
+    }
+    return UIntMax(x)
+  }
+
+  // return the closest representable UIntMax value
+  func toUIntMaxSaturatingWithDouble(x: Double) -> UIntMax {
+    if x >= Double(UIntMax.max) {
+      return UIntMax.max
+    }
+    if x <= Double(UIntMax.min) {
+      return UIntMax.min
+    }
+    return UIntMax(x)
+  }
+
+  // return the absolute value of the difference of lhs and rhs
+  func absDiff(lhs: UIntMax, _ rhs: UIntMax) -> UIntMax {
+    let maxVal = lhs > rhs ? lhs : rhs
+    let minVal = lhs <= rhs ? lhs : rhs
+    return maxVal - minVal
+  }
+
+  // check if pow(lhs, rhs) equals result
+  // Uses appropriate accuracy for floating-point calculations
+  func powerTest(lhs: UIntMax, _ rhs: UIntMax, result: UIntMax) {
+
+    // Floating point powers are accurate to the limit of precision
+    XCTAssertEqual(powf(Float(lhs), Float(rhs)), Float(result))
+    XCTAssertEqual(pow(Float(lhs), Float(rhs)), Float(result))
+    XCTAssertEqual(Float(lhs) ** Float(rhs), Float(result))
+    var tempF = Float(lhs)
+    tempF **= Float(rhs)
+    XCTAssertEqual(tempF, Float(result))
+    // But what if we ask for integer-accuracy?
+    let bitWidthF:      UIntMax = 32
+    let precisionBitsF: UIntMax = 24
+    // Keep the top (24 + 32) bits of result, shifting them into the lowest (24 + 32) bits
+    let precisionF: UIntMax = result >> (bitWidthF - precisionBitsF)
+    XCTAssertEqualWithAccuracy(Float(absDiff(result, toUIntMaxSaturatingWithFloat(pow(Float(lhs), Float(rhs))))), 0.0, accuracy: Float(precisionF))
+
+    // Floating point powers are accurate to the limit of precision
+    XCTAssertEqual(pow(Double(lhs), Double(rhs)), Double(result))
+    XCTAssertEqual(Double(lhs) ** Double(rhs), Double(result))
+    var tempD = Double(lhs)
+    tempD **= Double(rhs)
+    XCTAssertEqual(tempD, Double(result))
+    // But what if we ask for integer-accuracy?
+    let bitWidthD:      UIntMax = 64
+    let precisionBitsD: UIntMax = 53
+    // Keep the top 53 bits of result, shifting them into the lowest 53 bits
+    let precisionD: UIntMax = result >> (bitWidthD - precisionBitsD)
+    XCTAssertEqualWithAccuracy(Double(absDiff(result, toUIntMaxSaturatingWithDouble(pow(Double(lhs), Double(rhs))))), 0.0, accuracy: Double(precisionD))
+
+    // Floating point powers are accurate to the limit of precision
+    XCTAssertEqual(pow(CGFloat(lhs), CGFloat(rhs)), CGFloat(result))
+    XCTAssertEqual(CGFloat(lhs) ** CGFloat(rhs), CGFloat(result))
+    var tempC = CGFloat(lhs)
+    tempC **= CGFloat(rhs)
+    XCTAssertEqual(tempC, CGFloat(result))
+    // The CGFloat results should be the same as either the Float or Double results, depending on platform
+
+    // Integer powers
+    XCTAssertEqual(pow(lhs, rhs), result)
+    XCTAssertEqual(lhs ** rhs, result)
+    var tempU = lhs
+    tempU **= rhs
+    XCTAssertEqual(tempU, result)
+    // Will this be too slow for large powers?
+    XCTAssertEqual(powIntegerBitwise(lhs, rhs), result)
+    XCTAssertEqual(powIntegerIterate(lhs, rhs), result)
+
+    // UIntBox powers
+    XCTAssertEqual(pow(UIntBox(lhs), UIntBox(rhs)), UIntBox(result))
+    XCTAssertEqual(UIntBox(lhs) ** UIntBox(rhs), UIntBox(result))
+    var tempB = UIntBox(lhs)
+    tempB **= UIntBox(rhs)
+    XCTAssertEqual(tempB, UIntBox(result))
+    XCTAssertEqual(powIntegerBitwise(UIntBox(lhs), UIntBox(rhs)), UIntBox(result))
+    // Will this be too slow for large powers?
+    XCTAssertEqual(powIntegerIterate(UIntBox(lhs), UIntBox(rhs)), UIntBox(result))
+    // But what if we ask for integer-accuracy?
+    XCTAssertEqual(pow(UIntBox(lhs), UIntBox(rhs)).unboxedValue, result)
+  }
+
+  func testPower() {
+    // Simple Cases
+    powerTest( 2, 3, result:     8)
+    powerTest( 5, 2, result:    25)
+    powerTest(10, 4, result: 10000)
+
+    // Ones and Zeroes
+    powerTest(1, 1, result: 1)
+    powerTest(1, 0, result: 1)
+    powerTest(0, 1, result: 0)
+    // And 0 ** 0 is?
+    // 1, apparently
+    powerTest(0, 0, result: 1)
+
+    // Zeroes
+    powerTest( 2, 0, result: 1)
+    powerTest(10, 0, result: 1)
+
+    // Large Numbers
+    powerTest(2, 20, result: (1024 * 1024))
+    // Float precision is 24
+    powerTest(2, 23, result: (1 << 23))
+    powerTest(2, 24, result: (1 << 24))
+    powerTest(2, 25, result: (1 << 25))
+    // Double precision is 53
+    powerTest(2, 52, result: (1 << 52))
+    powerTest(2, 53, result: (1 << 53))
+    powerTest(2, 54, result: (1 << 54))
+    // Maxima
+    powerTest(2, 63, result: (1 << 63))
+    let pow3_4:  UIntMax = 3 * 3 * 3 * 3
+    let pow3_13: UIntMax = 3 * pow3_4 * pow3_4 * pow3_4
+    let pow3_39: UIntMax = pow3_13 * pow3_13 * pow3_13
+    powerTest(3, 39, result: pow3_39)
+    powerTest(4, 31, result: (1 << 62))
+    let pow5_3:  UIntMax = 5 * 5 * 5
+    let pow5_9:  UIntMax = pow5_3 * pow5_3 * pow5_3
+    let pow5_27: UIntMax = pow5_9 * pow5_9 * pow5_9
+    powerTest(5, 27, result: pow5_27)
+    let pow6_4:  UIntMax = 6 * 6 * 6 * 6
+    let pow6_8:  UIntMax = pow6_4 * pow6_4
+    let pow6_24: UIntMax = pow6_8 * pow6_8 * pow6_8
+    powerTest(6, 24, result: pow6_24)
+    let pow7_3:  UIntMax = 7 * 7 * 7
+    let pow7_7:  UIntMax = 7 * pow7_3 * pow7_3
+    let pow7_22: UIntMax = 7 * pow7_7 * pow7_7 * pow7_7
+    powerTest(7, 22, result: pow7_22)
+
+    // Large / Small Numbers
+    powerTest(UIntMax.max, 0, result: 1)
+    powerTest(UIntMax.max, 1, result: UIntMax.max)
+    powerTest(0, UIntMax.max, result: 0)
+    powerTest(1, UIntMax.max, result: 1)
+  }
+
   func testHashable() {
     XCTAssertEqual(UIntBox(0).hashValue, UIntBox(0).hashValue)
 

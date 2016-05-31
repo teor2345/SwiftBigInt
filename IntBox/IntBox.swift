@@ -369,6 +369,16 @@ public func >>(lhs: UIntBox, rhs: UIntMax) -> UIntBox {
 // even though it's part of most type names, and the standard libarary has IntegerArithmeticType and BitwiseOperationsType
 extension UIntBox: FixedBitWidthType { public static let bitWidth = UnboxedType.bitWidth }
 
+// The Swift standard library doesn't have a power operator, or an integer-accuracy power function
+// We use the power operator ** from http://nshipster.com/swift-operators/
+extension UIntBox:    PowerType {}
+
+// The power function: calculates lhs to the power of rhs
+@warn_unused_result
+func **(lhs: UIntBox, rhs: UIntBox) -> UIntBox {
+  return pow(lhs, rhs)
+}
+
 extension UIntBox: Hashable {
   /// Instances of conforming types provide an integer `hashValue` and
   /// can be used as `Dictionary` keys.
@@ -424,8 +434,7 @@ extension UIntBox: _Incrementable {
 //   Not Mentioned: compound assignment operators (|= etc), which are automatically supplied
 
 // Powers
-// Integral Powers
-// Integral Exponents
+// Integral Powers / Exponents
 
 // Low Priority
 

@@ -19,7 +19,7 @@ public protocol Integral: IntegerArithmeticType, BitwiseOperationsType, IntegerL
 
 
 // Extra Protocols specific to this framework
-public protocol IntegralExtra: BitwiseShiftType /*, FixedBitWidthType */ {
+public protocol IntegralExtra: BitwiseShiftType, FixedBitWidthType {
   
 }
 

@@ -179,6 +179,7 @@ extension UIntBox: IntegerArithmeticType {
 
   /// Adds `lhs` and `rhs`, returning the result and a `Bool` that is
   /// `true` iff the operation caused an arithmetic overflow.
+  @warn_unused_result
   public static func addWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
     let (result, overflow) = UnboxedType.addWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
@@ -188,6 +189,7 @@ extension UIntBox: IntegerArithmeticType {
 
   /// Subtracts `lhs` and `rhs`, returning the result and a `Bool` that is
   /// `true` iff the operation caused an arithmetic overflow.
+  @warn_unused_result
   public static func subtractWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
     let (result, overflow) = UnboxedType.subtractWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
@@ -197,6 +199,7 @@ extension UIntBox: IntegerArithmeticType {
 
   /// Multiplies `lhs` and `rhs`, returning the result and a `Bool` that is
   /// `true` iff the operation caused an arithmetic overflow.
+  @warn_unused_result
   public static func multiplyWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
     let (result, overflow) = UnboxedType.multiplyWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
@@ -206,6 +209,7 @@ extension UIntBox: IntegerArithmeticType {
 
   /// Divides `lhs` and `rhs`, returning the result and a `Bool` that is
   /// `true` iff the operation caused an arithmetic overflow.
+  @warn_unused_result
   public static func divideWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
     let (result, overflow) = UnboxedType.divideWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?
@@ -215,6 +219,7 @@ extension UIntBox: IntegerArithmeticType {
 
   /// Divides `lhs` and `rhs`, returning the remainder and a `Bool` that is
   /// `true` iff the operation caused an arithmetic overflow.
+  @warn_unused_result
   public static func remainderWithOverflow(lhs: UIntBox, _ rhs: UIntBox) -> (UIntBox, overflow: Bool) {
     let (result, overflow) = UnboxedType.remainderWithOverflow(lhs.unboxedValue, rhs.unboxedValue)
     // Can we skip the boxing if overflow is true?

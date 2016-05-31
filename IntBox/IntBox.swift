@@ -365,6 +365,8 @@ public func >>(lhs: UIntBox, rhs: UIntMax) -> UIntBox {
   return UIntBox(lhs.unboxedValue >> rhs)
 }
 
+// Surprisingly, the swift standard library doesn't tell you how many bits are in an integer,
+// even though it's part of most type names, and the standard libarary has IntegerArithmeticType and BitwiseOperationsType
 extension UIntBox: FixedBitWidthType { public static let bitWidth = UnboxedType.bitWidth }
 
 extension UIntBox: Hashable {

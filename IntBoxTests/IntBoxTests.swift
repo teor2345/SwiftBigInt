@@ -765,6 +765,17 @@ class IntBoxTests: XCTestCase {
     return UIntMax(x)
   }
 
+  // return the closest representable UIntMax value
+  func toUIntMaxSaturatingWithCGFloat(x: CGFloat) -> UIntMax {
+    if x >= CGFloat(UIntMax.max) {
+      return UIntMax.max
+    }
+    if x <= CGFloat(UIntMax.min) {
+      return UIntMax.min
+    }
+    return UIntMax(x)
+  }
+
   // return the absolute value of the difference of lhs and rhs
   func absDiff(lhs: UIntMax, _ rhs: UIntMax) -> UIntMax {
     let maxVal = lhs > rhs ? lhs : rhs
@@ -775,6 +786,9 @@ class IntBoxTests: XCTestCase {
   // check if pow(lhs, rhs) equals result
   // Uses appropriate accuracy for floating-point calculations
   func powerTest(lhs: UIntMax, _ rhs: UIntMax, result: UIntMax) {
+    // powFloatingPoint is acurate to one in one hundred thousand (1/10**5)
+    // At least on these unit tests
+    let powFPAccuracy = 1.0/100000.0 * Double(result)
 
     // Floating point powers are accurate to the limit of precision
     XCTAssertEqual(powf(Float(lhs), Float(rhs)), Float(result))
@@ -783,6 +797,9 @@ class IntBoxTests: XCTestCase {
     var tempF = Float(lhs)
     tempF **= Float(rhs)
     XCTAssertEqual(tempF, Float(result))
+    // Try the home-grown power calculation
+    // Unsurprisingly, it's less accurate
+    XCTAssertEqualWithAccuracy(powFloatingPoint(Float(lhs), Float(rhs)), Float(result), accuracy: Float(powFPAccuracy))
     // But what if we ask for integer-accuracy?
     let bitWidthF:      UIntMax = 32
     let precisionBitsF: UIntMax = 24
@@ -796,6 +813,9 @@ class IntBoxTests: XCTestCase {
     var tempD = Double(lhs)
     tempD **= Double(rhs)
     XCTAssertEqual(tempD, Double(result))
+    // Try the home-grown power calculation
+    // Unsurprisingly, it's less accurate
+    XCTAssertEqualWithAccuracy(powFloatingPoint(Double(lhs), Double(rhs)), Double(result), accuracy: Double(powFPAccuracy))
     // But what if we ask for integer-accuracy?
     let bitWidthD:      UIntMax = 64
     let precisionBitsD: UIntMax = 53
@@ -809,7 +829,17 @@ class IntBoxTests: XCTestCase {
     var tempC = CGFloat(lhs)
     tempC **= CGFloat(rhs)
     XCTAssertEqual(tempC, CGFloat(result))
-    // The CGFloat results should be the same as either the Float or Double results, depending on platform
+    // Try the home-grown power calculation
+    // Unsurprisingly, it's less accurate
+    XCTAssertEqualWithAccuracy(powFloatingPoint(CGFloat(lhs), CGFloat(rhs)), CGFloat(result), accuracy: CGFloat(powFPAccuracy))
+    // But what if we ask for integer-accuracy?
+    // The CGFloat accuracy should be the same as either the Float or Double results, depending on platform
+    // Assume it's at least the float accuracy
+    let bitWidthCG:      UIntMax = 32
+    let precisionBitsCG: UIntMax = 24
+    // Keep the top (24 + 32) bits of result, shifting them into the lowest (24 + 32) bits
+    let precisionCG: UIntMax = result >> (bitWidthCG - precisionBitsCG)
+    XCTAssertEqualWithAccuracy(CGFloat(absDiff(result, toUIntMaxSaturatingWithCGFloat(pow(CGFloat(lhs), CGFloat(rhs))))), 0.0, accuracy: CGFloat(precisionCG))
 
     // Integer powers
     XCTAssertEqual(pow(lhs, rhs), result)

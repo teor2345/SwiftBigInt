@@ -17,17 +17,25 @@ public protocol FixedBitWidthType {
 
 // All integers just need a little nudge to conform to this protocol
 
-// Swift says UInt is 64 bits, but what about on 32 bit platforms?
-extension UInt:    FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
-//extension UIntMax: FixedBitWidthType { public static let bitWidth = bitWidthUnsigned(UIntMax()) } - redundant, UInt64 conforms
+// The Swift module documentation says UInt is 64 bits, but the documentation says it's 32 bit on 32 bit platforms
+extension UInt:    FixedBitWidthType {
+  public static let bitWidth: UIntMax = UInt.bitWidthUnsigned()
+}
+// Redundant, UInt64 conforms
+//extension UIntMax: FixedBitWidthType { public static let bitWidth = UIntMax.bitWidthUnsigned() }
 extension UInt64:  FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
 extension UInt32:  FixedBitWidthType { public static let bitWidth: UIntMax = 32 }
 extension UInt16:  FixedBitWidthType { public static let bitWidth: UIntMax = 16 }
 extension UInt8:   FixedBitWidthType { public static let bitWidth: UIntMax =  8 }
 
-// Swift says Int is 64 bits, but what about on 32 bit platforms?
-extension Int:     FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
-//extension IntMax:  FixedBitWidthType { public static let bitWidth = bitWidthUnsigned(IntMax.) } - redundant, Int64 conforms
+// The Swift module documentation says Int is 64 bits, but the documentation says it's 32 bit on 32 bit platforms
+extension Int:     FixedBitWidthType {
+  // UInt and Int are the same size
+  public static let bitWidth: UIntMax = UInt.bitWidthUnsigned()
+}
+// Redundant, Int64 conforms
+// UIntMax and IntMax are the same size
+//extension IntMax:  FixedBitWidthType { public static let bitWidth = UIntMax.bitWidthUnsigned() }
 extension Int64:   FixedBitWidthType { public static let bitWidth: UIntMax = 64 }
 extension Int32:   FixedBitWidthType { public static let bitWidth: UIntMax = 32 }
 extension Int16:   FixedBitWidthType { public static let bitWidth: UIntMax = 16 }

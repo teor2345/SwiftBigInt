@@ -705,9 +705,9 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(UIntBox(1) >> 1, 0)
 
     // Shift off end
-    XCTAssertEqual(((~UIntBox.allZeros) >> (UIntBox.bitWidth/2)) >> (UIntBox.bitWidth/2), 0)
+    XCTAssertEqual(((~UIntBox.allZeros) >> UIntMax(UIntBox.bitWidth/2)) >> UIntMax(UIntBox.bitWidth/2), 0)
     // A ridiculously large shiftee
-    XCTAssertEqual(UIntBox.max >> (UIntBox.bitWidth/2), 4294967295)
+    XCTAssertEqual(UIntBox.max >> UIntMax(UIntBox.bitWidth/2), 4294967295)
 
     // fatal error: shift amount is larger than type size in bits
     //XCTAssertEqual(UIntBox(125) >> UIntBox.max, 0)
@@ -724,9 +724,9 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(UIntBox(0) << 0, 0)
 
     // Shift off end
-    XCTAssertEqual((UIntBox(1) << (UIntBox.bitWidth/2)) << (UIntBox.bitWidth/2), 0)
+    XCTAssertEqual((UIntBox(1) << UIntMax(UIntBox.bitWidth/2)) << UIntMax(UIntBox.bitWidth/2), 0)
     // A ridiculously large shiftee
-    XCTAssertEqual(UIntBox.max << (UIntBox.bitWidth/2), 18446744069414584320)
+    XCTAssertEqual(UIntBox.max << UIntMax(UIntBox.bitWidth/2), 18446744069414584320)
 
     // fatal error: shift amount is larger than type size in bits
     //XCTAssertEqual(UIntBox(1) << UIntBox.bitWidth, 0)
@@ -801,10 +801,10 @@ class IntBoxTests: XCTestCase {
     // Unsurprisingly, it's less accurate
     XCTAssertEqualWithAccuracy(powFloatingPoint(Float(lhs), Float(rhs)), Float(result), accuracy: Float(powFPAccuracy))
     // But what if we ask for integer-accuracy?
-    let bitWidthF:      UIntMax = 32
-    let precisionBitsF: UIntMax = 24
+    let bitWidthF      = 32
+    let precisionBitsF = 24
     // Keep the top (24 + 32) bits of result, shifting them into the lowest (24 + 32) bits
-    let precisionF: UIntMax = result >> (bitWidthF - precisionBitsF)
+    let precisionF: UIntMax = result >> UIntMax(bitWidthF - precisionBitsF)
     XCTAssertEqualWithAccuracy(Float(absDiff(result, toUIntMaxSaturatingWithFloat(pow(Float(lhs), Float(rhs))))), 0.0, accuracy: Float(precisionF))
 
     // Floating point powers are accurate to the limit of precision
@@ -817,10 +817,10 @@ class IntBoxTests: XCTestCase {
     // Unsurprisingly, it's less accurate
     XCTAssertEqualWithAccuracy(powFloatingPoint(Double(lhs), Double(rhs)), Double(result), accuracy: Double(powFPAccuracy))
     // But what if we ask for integer-accuracy?
-    let bitWidthD:      UIntMax = 64
-    let precisionBitsD: UIntMax = 53
+    let bitWidthD      = 64
+    let precisionBitsD = 53
     // Keep the top 53 bits of result, shifting them into the lowest 53 bits
-    let precisionD: UIntMax = result >> (bitWidthD - precisionBitsD)
+    let precisionD: UIntMax = result >> UIntMax(bitWidthD - precisionBitsD)
     XCTAssertEqualWithAccuracy(Double(absDiff(result, toUIntMaxSaturatingWithDouble(pow(Double(lhs), Double(rhs))))), 0.0, accuracy: Double(precisionD))
 
     // Floating point powers are accurate to the limit of precision
@@ -835,10 +835,10 @@ class IntBoxTests: XCTestCase {
     // But what if we ask for integer-accuracy?
     // The CGFloat accuracy should be the same as either the Float or Double results, depending on platform
     // Assume it's at least the float accuracy
-    let bitWidthCG:      UIntMax = 32
-    let precisionBitsCG: UIntMax = 24
+    let bitWidthCG      = 32
+    let precisionBitsCG = 24
     // Keep the top (24 + 32) bits of result, shifting them into the lowest (24 + 32) bits
-    let precisionCG: UIntMax = result >> (bitWidthCG - precisionBitsCG)
+    let precisionCG: UIntMax = result >> UIntMax(bitWidthCG - precisionBitsCG)
     XCTAssertEqualWithAccuracy(CGFloat(absDiff(result, toUIntMaxSaturatingWithCGFloat(pow(CGFloat(lhs), CGFloat(rhs))))), 0.0, accuracy: CGFloat(precisionCG))
 
     // Integer powers

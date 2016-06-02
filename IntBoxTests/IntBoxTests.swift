@@ -864,6 +864,36 @@ class IntBoxTests: XCTestCase {
     XCTAssertEqual(pow(UIntBox(lhs), UIntBox(rhs)).unboxedValue, result)
   }
 
+  // check if pow(lhs, rhs) equals result
+  // Uses appropriate accuracy for floating-point calculations
+  // A simpler test for signed integers
+  func powerTestWithSignedInt(lhs: IntMax, _ rhs: IntMax, result: IntMax) {
+
+    // Integer powers
+    XCTAssertEqual(lhs ** rhs, result)
+    // This should be the same as lhs ** rhs
+    XCTAssertEqual(powIntegerBitwise(lhs, rhs), result)
+    // Another home-grown version
+    XCTAssertEqual(powIntegerIterate(lhs, rhs), result)
+
+    let precisionBitsD: IntMax = 53
+    let limitD: IntMax = 2 ** precisionBitsD
+    // Just skip these tests when floating point precision is too low
+    if   lhs    != IntMax.min && abs(lhs)    <= limitD
+      && rhs    != IntMax.min && abs(rhs)    <= limitD
+      && result != IntMax.min && abs(result) <= limitD {
+      // Floating point powers
+      // Allow fractions to be rounded down to 0
+      XCTAssertEqualWithAccuracy(Double(lhs) ** Double(rhs), Double(result), accuracy: 0.5)
+      // This should be the same as lhs ** rhs
+      XCTAssertEqualWithAccuracy(pow(Double(lhs), Double(rhs)), Double(result), accuracy: 0.5)
+      // A home-grown version, which doesn't cope well with lhs being negative
+      if lhs >= 0 {
+        XCTAssertEqual(powFloatingPoint(Double(lhs), Double(rhs)), Double(result))
+      }
+    }
+  }
+
   func testPower() {
     // Simple Cases
     powerTest( 2, 3, result:     8)
@@ -917,6 +947,39 @@ class IntBoxTests: XCTestCase {
     powerTest(UIntMax.max, 1, result: UIntMax.max)
     powerTest(0, UIntMax.max, result: 0)
     powerTest(1, UIntMax.max, result: 1)
+
+    // Test (-a)**b
+    powerTestWithSignedInt(-1, 0, result: 1)
+    powerTestWithSignedInt(-1, 1, result: -1)
+    powerTestWithSignedInt(-1, 2, result: 1)
+    powerTestWithSignedInt(-1, 3, result: -1)
+    powerTestWithSignedInt(-1, (IntMax.max - 1), result: 1)
+    powerTestWithSignedInt(-1, IntMax.max, result: -1)
+    powerTestWithSignedInt(IntMax.min, 0, result: 1)
+    powerTestWithSignedInt(IntMax.min, 1, result: IntMax.min)
+
+    powerTestWithSignedInt(-2, 62, result:   2 ** 62 )
+    powerTestWithSignedInt(-2, 61, result: -(2 ** 61))
+
+    // And within floating point precision
+    powerTestWithSignedInt(-2, 53, result: -(2 ** 53))
+    powerTestWithSignedInt(-2, 52, result:   2 ** 52 )
+
+    // Test a**(-b)
+    powerTestWithSignedInt(1, -1, result: 1)
+    powerTestWithSignedInt(1, -2, result: 1)
+
+    powerTestWithSignedInt(-1, -1, result: -1)
+    powerTestWithSignedInt(-1, -2, result: 1)
+
+    // Rounds to 0
+    powerTestWithSignedInt(2, -1, result: 0)
+    powerTestWithSignedInt(IntMax.max, -1, result: 0)
+    powerTestWithSignedInt(IntMax.min, -1, result: 0)
+
+    // And 1/0 is?
+    // Different depending on the method used, apparently
+    //powerTestWithSignedInt(0, -1, result: 0)
   }
 
   func testHashable() {

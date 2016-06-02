@@ -81,13 +81,6 @@ protocol Exponentable: FloatingPointType, IntegerLiteralConvertible {
 // If there's no known speed-up using only comparison and integer conversions, return nil
 func powSimplifyIdentities<T: protocol<Comparable, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T? {
 
-  // Answer a**(-b) with 0
-  // It's not accurate if a**b is 0 or 1, but it's close most of the time
-  // We really should throw an exception here
-  if rhs < 0 {
-    return 0
-  }
-
   // Speed up a**0 == 1
   if rhs == 0 {
     return 1
@@ -103,12 +96,20 @@ func powSimplifyIdentities<T: protocol<Comparable, IntegerLiteralConvertible>>(l
     return lhs
   }
 
+  // Answer a**(-b) with 0
+  // It's not accurate if a**b is 0 or 1, but it's close most of the time
+  // We really should throw an exception here
+  if rhs < 0 {
+    return 0
+  }
+
   // There's no speed-up here
   return nil
 }
 
 // A generic implementation of the power function "pow" based on floating-point arithmetic
 // Accuracy is based on the accuracy of exp, log, and * in the underlying type
+// This function doesn't cope well with lhs being negative
 func powFloatingPoint<T: Exponentable>(lhs: T, _ rhs: T) -> T {
 
   // Speed up some standard power identities
@@ -116,6 +117,11 @@ func powFloatingPoint<T: Exponentable>(lhs: T, _ rhs: T) -> T {
   if speedUp != nil {
     return speedUp!
   }
+
+  // We really should catch cases where lhs is negative, because log() can't handle them
+  //if lhs < 0 {
+  //  throw an error
+  //}
 
   // Using the logarithmic identity:
   // ln(a**b) == b*ln(a)
@@ -186,12 +192,6 @@ extension CGFloat: Exponentable {
 // If there's no known speed-up using only comparison and integer arithmetic, return nil
 func powSimplifyIntegerIdentities<T: protocol<IntegerArithmeticType, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T? {
 
-  // Speed up some standard power identities
-  let speedUp = powSimplifyIdentities(lhs, rhs)
-  if speedUp != nil {
-    return speedUp!
-  }
-
   // Speed up (-1)**b == +/- 1
   if lhs == -1 {
     if rhs % 2 == 0 {
@@ -199,6 +199,12 @@ func powSimplifyIntegerIdentities<T: protocol<IntegerArithmeticType, IntegerLite
     } else {
       return lhs
     }
+  }
+  
+  // Speed up some standard power identities
+  let speedUp = powSimplifyIdentities(lhs, rhs)
+  if speedUp != nil {
+    return speedUp!
   }
 
   // There's no speed-up here

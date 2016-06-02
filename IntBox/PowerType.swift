@@ -282,7 +282,8 @@ func **(lhs: UInt, rhs: UInt) -> UInt {
   return pow(lhs, rhs)
 }
 
-//extension UIntMax: PowerType {} - redundant, UInt64 conforms
+// Redundant, UInt64 conforms
+//extension UIntMax: PowerType {}
 extension UInt64:  PowerType {}
 
 // The power function: calculates lhs to the power of rhs
@@ -323,7 +324,8 @@ func **(lhs: Int, rhs: Int) -> Int {
   return pow(lhs, rhs)
 }
 
-//extension IntMax:  PowerType {} - redundant, Int64 conforms
+// Redundant, Int64 conforms
+//extension IntMax:  PowerType {}
 extension Int64:   PowerType {}
 
 // The power function: calculates lhs to the power of rhs

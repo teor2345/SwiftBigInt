@@ -79,6 +79,8 @@ protocol Exponentable: FloatingPointType, IntegerLiteralConvertible {
 // Speed up basic exponential identities, such as those where lhs or rhs are 0 or 1
 // Negative powers always return a zero result
 // If there's no known speed-up using only comparison and integer conversions, return nil
+// We could use autoclosures here to avoid evaluating one side of the expression when the result is known
+// But which side? And how could we avoid confusing "sometimes-short-circuit" semantics?
 func powSimplifyIdentities<T: protocol<Comparable, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T? {
 
   // Speed up a**0 == 1
@@ -110,6 +112,8 @@ func powSimplifyIdentities<T: protocol<Comparable, IntegerLiteralConvertible>>(l
 // A generic implementation of the power function "pow" based on floating-point arithmetic
 // Accuracy is based on the accuracy of exp, log, and * in the underlying type
 // This function doesn't cope well with lhs being negative
+// We could use autoclosures here to avoid evaluating one side of the expression when the result is known
+// But which side? And how could we avoid confusing "sometimes-short-circuit" semantics?
 func powFloatingPoint<T: Exponentable>(lhs: T, _ rhs: T) -> T {
 
   // Speed up some standard power identities
@@ -190,6 +194,8 @@ extension CGFloat: Exponentable {
 // Speed up basic exponential identities, such as those where lhs or rhs are 0 or 1, or lhs is -1
 // Negative powers always return a zero result
 // If there's no known speed-up using only comparison and integer arithmetic, return nil
+// We could use autoclosures here to avoid evaluating one side of the expression when the result is known
+// But which side? And how could we avoid confusing "sometimes-short-circuit" semantics?
 func powSimplifyIntegerIdentities<T: protocol<IntegerArithmeticType, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T? {
 
   // Speed up (-1)**b == +/- 1
@@ -214,6 +220,8 @@ func powSimplifyIntegerIdentities<T: protocol<IntegerArithmeticType, IntegerLite
 // A generic implementation of the power function "pow" using iterative integer arithmetic for each exponentiation
 // Negative powers always return a zero result
 // This implementation has exact integer accuracy
+// We could use autoclosures here to avoid evaluating one side of the expression when the result is known
+// But which side? And how could we avoid confusing "sometimes-short-circuit" semantics?
 func powIntegerIterate<T: protocol<IntegerArithmeticType, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T {
   // The remaining number of exponentiations
   var expCount = rhs
@@ -238,6 +246,8 @@ func powIntegerIterate<T: protocol<IntegerArithmeticType, IntegerLiteralConverti
 // (We could do this with bitwise arithmetic and shifts instead, but that would impose additional protocol requirements)
 // Negative powers always return a zero result
 // This implementation has exact integer accuracy
+// We could use autoclosures here to avoid evaluating one side of the expression when the result is known
+// But which side? And how could we avoid confusing "sometimes-short-circuit" semantics?
 func powIntegerBitwise<T: protocol<IntegerArithmeticType, IntegerLiteralConvertible>>(lhs: T, _ rhs: T) -> T {
   // The remaining number of exponentiations
   var expCount = rhs

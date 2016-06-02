@@ -788,7 +788,7 @@ class IntBoxTests: XCTestCase {
   func powerTest(lhs: UIntMax, _ rhs: UIntMax, result: UIntMax) {
     // powFloatingPoint is acurate to one in one hundred thousand (1/10**5)
     // At least on these unit tests
-    let powFPAccuracy = 1.0/100000.0 * Double(result)
+    let powFPAccuracy = 1.0/100_000.0 * Double(result)
 
     // Floating point powers are accurate to the limit of precision
     XCTAssertEqual(powf(Float(lhs), Float(rhs)), Float(result))

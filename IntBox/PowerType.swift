@@ -97,7 +97,7 @@ func powSimplifyIdentities<T: protocol<Comparable, IntegerLiteralConvertible>>(l
   }
 
   // Answer a**(-b) with 0
-  // It's not accurate if a**b is 0 or 1, but it's close most of the time
+  // It's not accurate if a**b is 0 or 1, but otherwise it's integer-accurate under truncation
   // We really should throw an exception here
   if rhs < 0 {
     return 0
